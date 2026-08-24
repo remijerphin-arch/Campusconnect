@@ -23,6 +23,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
       />
       <div className={sidebarCollapsed ? 'lg:pl-24' : 'lg:pl-72'}>
         <Topbar
+          currentPath={currentPath}
           onMenuClick={() => setMobileOpen(true)}
           onCollapseToggle={() => setSidebarCollapsed((value) => !value)}
           sidebarCollapsed={sidebarCollapsed}

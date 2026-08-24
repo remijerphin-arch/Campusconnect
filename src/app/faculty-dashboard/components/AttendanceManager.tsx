@@ -1,14 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Radio, Save } from 'lucide-react';
-import { SUBJECT_ATTENDANCE } from '@/lib/facultyMockData';
+import { SUBJECT_ATTENDANCE, type StudentAttendanceRow } from '@/lib/facultyMockData';
+import { readAttendanceOverrides, saveAttendanceOverrides } from '@/lib/demoStore';
+import { toast } from 'sonner';
 
 interface AttendanceManagerProps {
   subjectId: string;
 }
 
 export default function AttendanceManager({ subjectId }: AttendanceManagerProps) {
-  const rows = SUBJECT_ATTENDANCE[subjectId] ?? [];
+  const [rows, setRows] = useState<StudentAttendanceRow[]>(SUBJECT_ATTENDANCE[subjectId] ?? []);
+
+  useEffect(() => {
+    setRows(readAttendanceOverrides()[subjectId] ?? SUBJECT_ATTENDANCE[subjectId] ?? []);
+  }, [subjectId]);
+
+  const updateStatus = (studentId: string, status: StudentAttendanceRow['status']) => {
+    setRows((current) => current.map((row) => (row.studentId === studentId ? { ...row, status } : row)));
+  };
+
+  const saveChanges = () => {
+    const overrides = readAttendanceOverrides();
+    saveAttendanceOverrides({ ...overrides, [subjectId]: rows });
+    toast.success('Attendance changes saved for students');
+  };
 
   return (
     <section className="rounded-[2rem] border bg-card p-6 shadow-card">
@@ -37,9 +54,15 @@ export default function AttendanceManager({ subjectId }: AttendanceManagerProps)
               <p className="font-semibold">{row.name}</p>
               <p className="text-sm text-muted-foreground">{row.rollNumber}</p>
             </div>
-            <span className="rounded-full bg-muted px-3 py-1 text-sm font-medium capitalize">
-              {row.status}
-            </span>
+            <select
+              value={row.status}
+              onChange={(event) => updateStatus(row.studentId, event.target.value as StudentAttendanceRow['status'])}
+              className="rounded-xl border bg-background px-3 py-2 text-sm font-medium capitalize"
+            >
+              <option value="present">Present</option>
+              <option value="late">Late</option>
+              <option value="absent">Absent</option>
+            </select>
           </div>
         ))}
       </div>

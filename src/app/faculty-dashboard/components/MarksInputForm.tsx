@@ -1,14 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Save } from 'lucide-react';
-import { SUBJECT_MARKS } from '@/lib/facultyMockData';
+import { SUBJECT_MARKS, type MarksEntry } from '@/lib/facultyMockData';
+import { readMarksOverrides, saveMarksOverrides } from '@/lib/demoStore';
+import { toast } from 'sonner';
 
 interface MarksInputFormProps {
   subjectId: string;
 }
 
 export default function MarksInputForm({ subjectId }: MarksInputFormProps) {
-  const rows = SUBJECT_MARKS[subjectId] ?? [];
+  const [rows, setRows] = useState<MarksEntry[]>(SUBJECT_MARKS[subjectId] ?? []);
+
+  useEffect(() => {
+    setRows(readMarksOverrides()[subjectId] ?? SUBJECT_MARKS[subjectId] ?? []);
+  }, [subjectId]);
+
+  const updateMark = (studentId: string, field: keyof Pick<MarksEntry, 'internal1' | 'internal2' | 'internal3' | 'practical'>, value: string) => {
+    setRows((current) => current.map((row) => (
+      row.studentId === studentId ? { ...row, [field]: value === '' ? null : Number(value) } : row
+    )));
+  };
+
+  const saveChanges = () => {
+    const overrides = readMarksOverrides();
+    saveMarksOverrides({ ...overrides, [subjectId]: rows });
+    toast.success('Marks saved for students');
+  };
 
   return (
     <section className="rounded-[2rem] border bg-card p-6 shadow-card">
@@ -32,10 +51,18 @@ export default function MarksInputForm({ subjectId }: MarksInputFormProps) {
                   <p className="font-medium">{row.name}</p>
                   <p className="text-xs text-muted-foreground">{row.rollNumber}</p>
                 </td>
-                <td className="py-3">{row.internal1}</td>
-                <td className="py-3">{row.internal2}</td>
-                <td className="py-3">{row.internal3 ?? '-'}</td>
-                <td className="py-3">{row.practical ?? '-'}</td>
+                {(['internal1', 'internal2', 'internal3', 'practical'] as const).map((field) => (
+                  <td key={field} className="py-3">
+                    <input
+                      type="number"
+                      min="0"
+                      max="40"
+                      value={row[field] ?? ''}
+                      onChange={(event) => updateMark(row.studentId, field, event.target.value)}
+                      className="w-20 rounded-lg border bg-background px-2 py-1"
+                    />
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>

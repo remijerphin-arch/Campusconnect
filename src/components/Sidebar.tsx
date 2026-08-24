@@ -7,11 +7,13 @@ import {
   Building2,
   CalendarCheck,
   LayoutDashboard,
+  LogOut,
   Shield,
   Users,
   X,
 } from 'lucide-react';
 import AppLogo from '@/components/ui/AppLogo';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -20,13 +22,55 @@ interface SidebarProps {
   onMobileClose: () => void;
 }
 
-const navItems = [
-  { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
-  { href: '/faculty-dashboard', label: 'Faculty Dashboard', icon: BookOpen },
-  { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
-  { href: '/placement-admin', label: 'Placement Admin', icon: Building2 },
-  { href: '/', label: 'Login', icon: Shield },
-];
+const navItemsByPath = {
+  '/student-dashboard': [
+    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  ],
+  '/faculty-dashboard': [
+    { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
+  ],
+  '/placement-admin': [
+    { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
+  ],
+  '/placement-opportunities': [
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  ],
+  '/campus-admin': [
+    { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
+    { href: '/student-dashboard', label: 'Student Services', icon: LayoutDashboard },
+    { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
+    { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
+  ],
+} as const;
+
+const workspaceSummary = {
+  '/student-dashboard': {
+    title: 'Your campus essentials',
+    description: 'Track academics, attendance, placements, and campus community updates.',
+    status: 'Student view',
+  },
+  '/faculty-dashboard': {
+    title: 'Teaching operations',
+    description: 'Manage rosters, RFID attendance, and internal marks for your subjects.',
+    status: 'Faculty view',
+  },
+  '/placement-admin': {
+    title: 'Placement control center',
+    description: 'Coordinate companies, eligibility rules, drives, and candidate movement.',
+    status: 'Admin view',
+  },
+  '/placement-opportunities': {
+    title: 'Placement discovery',
+    description: 'Review open opportunities and track your placement applications.',
+    status: 'Student view',
+  },
+  '/campus-admin': {
+    title: 'Campus control center',
+    description: 'Manage access, services, integrations, and campus-wide operations.',
+    status: 'Admin view',
+  },
+} as const;
 
 export default function Sidebar({
   collapsed,
@@ -34,6 +78,16 @@ export default function Sidebar({
   mobileOpen,
   onMobileClose,
 }: SidebarProps) {
+  const summary = workspaceSummary[currentPath as keyof typeof workspaceSummary];
+
+  const handleLogout = async () => {
+    const supabase = createSupabaseBrowserClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+    window.location.href = '/';
+  };
+
   return (
     <>
       <div
@@ -62,14 +116,12 @@ export default function Sidebar({
         <div className="px-4 py-5">
           {!collapsed && (
             <div className="rounded-[1.5rem] bg-gradient-to-br from-primary/10 via-transparent to-accent/10 p-4">
-              <p className="text-sm font-semibold">Unified campus operations</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Academics, attendance, placements, lost-and-found, and resource exchange.
-              </p>
+              <p className="text-sm font-semibold">{summary?.title}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{summary?.description}</p>
               <div className="mt-4 flex gap-2 text-xs">
                 <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1">
                   <Users size={12} />
-                  4 roles
+                  {summary?.status}
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1">
                   <CalendarCheck size={12} />
@@ -79,7 +131,7 @@ export default function Sidebar({
             </div>
           )}
           <nav className="mt-5 space-y-2">
-            {navItems.map((item) => {
+            {(navItemsByPath[currentPath as keyof typeof navItemsByPath] ?? []).map((item) => {
               const Icon = item.icon;
               const active = currentPath === item.href;
               return (
@@ -94,6 +146,17 @@ export default function Sidebar({
               );
             })}
           </nav>
+        </div>
+        <div className="mt-auto border-t p-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            title="Log out"
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-muted-foreground transition hover:bg-danger/10 hover:text-danger"
+          >
+            <LogOut size={18} />
+            {!collapsed && <span>Log out</span>}
+          </button>
         </div>
       </aside>
     </>

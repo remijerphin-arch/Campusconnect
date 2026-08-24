@@ -10,6 +10,8 @@ CampusConnect is a cloud-based integrated student platform that brings academics
 - Lost-and-found and student resource exchange highlights
 - Role-based dashboards for students, faculty, and placement admins
 - Supabase-ready authentication with a demo-mode fallback for local previews
+- Campus admin control center for access, services, and integrations
+- Faculty editing for attendance and internal marks with student dashboard updates
 
 ## Supabase setup
 

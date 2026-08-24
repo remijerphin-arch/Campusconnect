@@ -48,6 +48,24 @@ export default function LoginPageClient() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    const matched = DEMO_CREDENTIALS.find(
+      (credential) => credential.email === data.email && credential.password === data.password
+    );
+
+    if (matched) {
+      toast.success(`Welcome, ${matched.name}`);
+      const route =
+        matched.roleKey === 'student'
+          ? '/student-dashboard'
+          : matched.roleKey === 'faculty'
+            ? '/faculty-dashboard'
+            : matched.roleKey === 'placement_admin'
+              ? '/placement-admin'
+              : '/campus-admin';
+      window.location.href = route;
+      return;
+    }
+
     const supabase = createSupabaseBrowserClient();
 
     if (supabase) {
@@ -63,7 +81,9 @@ export default function LoginPageClient() {
             ? '/student-dashboard'
             : selectedRole === 'faculty'
               ? '/faculty-dashboard'
-              : '/placement-admin';
+              : selectedRole === 'placement_admin'
+                ? '/placement-admin'
+                : '/campus-admin';
         return;
       }
 
@@ -73,25 +93,8 @@ export default function LoginPageClient() {
     }
 
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const matched = DEMO_CREDENTIALS.find(
-      (credential) => credential.email === data.email && credential.password === data.password
-    );
-
-    if (!matched) {
-      setError('email', { message: 'Use one of the demo credentials listed below.' });
-      setIsLoading(false);
-      return;
-    }
-
-    toast.success(`Welcome, ${matched.name}`);
-    const route =
-      matched.roleKey === 'student'
-        ? '/student-dashboard'
-        : matched.roleKey === 'faculty'
-          ? '/faculty-dashboard'
-          : '/placement-admin';
-    window.location.href = route;
+    setError('email', { message: 'Use a valid Supabase account or a demo credential below.' });
+    setIsLoading(false);
   };
 
   return (

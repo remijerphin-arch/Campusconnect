@@ -4,6 +4,7 @@ import DashboardBentoGrid from '@/app/student-dashboard/components/DashboardBent
 import NotificationsPanel from '@/app/student-dashboard/components/NotificationsPanel';
 import PlacementPipelineSection from '@/app/student-dashboard/components/PlacementPipelineSection';
 import UpcomingDeadlines from '@/app/student-dashboard/components/UpcomingDeadlines';
+import FacultyUpdatesPanel from '@/app/student-dashboard/components/FacultyUpdatesPanel';
 
 export default function StudentDashboardPage() {
   return (
@@ -11,6 +12,7 @@ export default function StudentDashboardPage() {
       <div className="space-y-6">
         <DashboardBentoGrid />
         <AttendanceSection />
+        <FacultyUpdatesPanel />
         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="space-y-6">
             <PlacementPipelineSection />

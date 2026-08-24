@@ -192,4 +192,11 @@ export const DEMO_CREDENTIALS = [
     email: 'placement@campusconnect.edu',
     password: 'placement123',
   },
+  {
+    label: 'Campus Admin',
+    roleKey: 'campus_admin' as const,
+    name: 'Campus Administrator',
+    email: 'admin@campusconnect.edu',
+    password: 'admin123',
+  },
 ];

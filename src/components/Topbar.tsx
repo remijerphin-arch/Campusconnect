@@ -5,12 +5,14 @@ import { Bell, Menu, PanelLeft, Search } from 'lucide-react';
 import { MOCK_NOTIFICATIONS } from '@/lib/mockData';
 
 interface TopbarProps {
+  currentPath: string;
   onMenuClick: () => void;
   onCollapseToggle: () => void;
   sidebarCollapsed: boolean;
 }
 
 export default function Topbar({
+  currentPath,
   onMenuClick,
   onCollapseToggle,
   sidebarCollapsed,
@@ -31,12 +33,14 @@ export default function Topbar({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            href="/placement-opportunities"
-            className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground sm:inline-flex"
-          >
-            Explore drives
-          </Link>
+          {currentPath === '/student-dashboard' && (
+            <Link
+              href="/placement-opportunities"
+              className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground sm:inline-flex"
+            >
+              Explore drives
+            </Link>
+          )}
           <div className="relative rounded-full border bg-card p-2">
             <Bell size={18} />
             <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-danger-foreground">
