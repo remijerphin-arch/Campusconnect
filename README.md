@@ -38,6 +38,7 @@ For the Supabase CLI workflow:
 supabase login
 supabase init
 supabase link --project-ref tviinfhlaihmapxuklvn
+supabase db push
 ```
 
 ## Included product features
@@ -75,6 +76,8 @@ Use these accounts on the local login screen:
 The local demo uses browser storage for CRUD previews and Supabase Auth for configured email/password login. The migration at `supabase/migrations/001_core_schema.sql` provides the relational starting point for cloud persistence and enables row-level security on sensitive tables. Apply it with the Supabase CLI after linking the project, then add policies for any additional modules before deploying.
 
 Uploads currently use browser file controls for the demo. Production uploads should use private Supabase Storage buckets with MIME-type, size, and role checks for resumes, assignment files, profile photos, lost-and-found images, company logos, and event media. Never expose the database password or service-role key in browser code.
+
+The application includes a shared upload helper that allows approved image/document types up to 10 MB and creates user-scoped paths. The server Supabase helper and middleware refresh Auth cookies for real Supabase sessions. Demo credentials intentionally remain client-only previews and are not a replacement for production authorization.
 
 Demo CRUD changes are stored in the browser's local storage. Production persistence should use Supabase tables protected by row-level security policies.
 
