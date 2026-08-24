@@ -4,6 +4,7 @@ import CompanyRoster from '@/app/placement-admin/components/CompanyRoster';
 import EligibilityCriteriaSetup from '@/app/placement-admin/components/EligibilityCriteriaSetup';
 import OpportunityLifecycle from '@/app/placement-admin/components/OpportunityLifecycle';
 import { PLACEMENT_SUMMARY } from '@/lib/placementAdminData';
+import SmartShortlist from '@/app/placement-admin/components/SmartShortlist';
 
 export default function PlacementAdminPage() {
   return (
@@ -40,6 +41,7 @@ export default function PlacementAdminPage() {
           <EligibilityCriteriaSetup />
           <CandidatePoolVisibility />
         </div>
+        <SmartShortlist />
       </div>
     </AppLayout>
   );

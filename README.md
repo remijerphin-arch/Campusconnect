@@ -13,6 +13,7 @@ CampusConnect is a cloud-based integrated student platform that brings academics
 - Campus admin control center for access, services, integrations, and audit activity
 - Faculty editing for attendance and internal marks with student dashboard updates
 - Placement company management with add, edit, delete, and opening-count controls
+- Explainable AI-assisted placement screening that ranks applicants against drive criteria
 - Student profile editing with permitted-field protection and professional profile details
 - Academic module with subject marks, attendance, CGPA/SGPA summaries, performance charts, and print-to-PDF reporting
 - Campus-admin controls for enabling, disabling, and reordering student dashboard widgets
@@ -48,6 +49,7 @@ npx supabase db push
 - Academic trend, attendance, applications, and deadline summaries
 - Faculty attendance and marks entry with saved updates visible to students
 - Placement discovery, eligibility, candidate lifecycle, and company management views
+- Placement Admin smart shortlist with score, eligibility reasons, manual selection, and saved decisions
 - Campus-admin user access, role editing, service toggles, RFID control, maintenance mode, and audit feed
 - Community highlights for lost-and-found and resource exchange
 - Responsive sidebar, mobile navigation, notifications, logout, and RFID sync status indicator
