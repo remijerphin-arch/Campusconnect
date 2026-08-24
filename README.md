@@ -35,10 +35,10 @@ The current screens use local mock data and browser storage so the UI remains av
 For the Supabase CLI workflow:
 
 ```bash
-supabase login
-supabase init
-supabase link --project-ref tviinfhlaihmapxuklvn
-supabase db push
+npx supabase login
+npx supabase init
+npx supabase link --project-ref tviinfhlaihmapxuklvn
+npx supabase db push
 ```
 
 ## Included product features
