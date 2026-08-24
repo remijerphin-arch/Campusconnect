@@ -1,99 +1,68 @@
 # CampusConnect
 
-CampusConnect is a cloud-based integrated student platform that brings academics, attendance, placement support, lost-and-found updates, and peer resource exchange into one digital ecosystem.
+> A role-aware campus operating system for academics, student life, and career growth.
 
-## What it covers
+CampusConnect brings the daily college experience into one focused workspace. Students can follow their academic progress, manage campus services, discover opportunities, recover lost items, and participate in campus life. Faculty can run teaching workflows. Placement teams can manage company drives. Campus administrators control access, modules, and platform policy.
 
-- Academic information in one place
-- RFID-backed attendance sync into the cloud platform
-- Placement discovery and eligibility tracking
-- Lost-and-found and student resource exchange highlights
-- Role-based dashboards for students, faculty, placement admins, and campus admins
-- Supabase-ready authentication with a demo-mode fallback for local previews
-- Campus admin control center for access, services, integrations, and audit activity
-- Faculty editing for attendance and internal marks with student dashboard updates
-- Placement company management with add, edit, delete, and opening-count controls
-- Explainable AI-assisted placement screening that ranks applicants against drive criteria
-- Placement drive operations with create, stage updates, and selection-round tracking
-- Student profile editing with permitted-field protection and professional profile details
-- Academic module with subject marks, attendance, CGPA/SGPA summaries, performance charts, and print-to-PDF reporting
-- Campus-admin controls for enabling, disabling, and reordering student dashboard widgets
-- Student services workspace covering attendance, timetable, assignments, exams, resources, announcements, leave, community, lost-and-found, events, exchange, and help desk
-- First-class `/lost-found` workspace with lost/found reports, search, filters, private claim verification, and moderator status flow
-- Faculty assignment creation, leave review, attendance export, and marks/attendance workflows
-- Faculty attendance validation, bulk present, date selection, low-attendance review, CSV history export, and configurable assessment types
-- Admin module management and role permission matrix preview
-- Persistent light/dark theme preference
-- Shared validation utilities for required fields, email, phone, dates, CGPA, marks, and upload limits
-- Unified `dataProvider`/repository boundary separating Supabase data from demo fallback data
-- Centralized storage bucket allowlist and user-scoped upload validation
+## Product Surface
 
-## Validation and error handling
+| Workspace | What it includes |
+| --- | --- |
+| Student | Dashboard, profile, academics, attendance, timetable, assignments, exams, resources, announcements, leave, community, Lost & Found, events, clubs, exchange, help desk, placements |
+| Faculty | Subjects, rosters, date-based attendance, bulk attendance, low-attendance review, marks, assessment types, assignments, leave review, exports |
+| Placement Admin | Companies, drives, eligibility, lifecycle stages, applications, explainable shortlist scoring, candidate selection |
+| Campus Admin | Users, roles, permissions, module switches, dashboard widgets, RFID state, maintenance mode, audit activity |
 
-Shared validation utilities cover required values, emails, phones, date ranges, CGPA, marks, and file restrictions. Interactive workflows show toast feedback, confirmation dialogs, empty states, disabled states, and explicit success/error messages; exports are generated only from authorized role surfaces.
+## Highlights
 
-## Testing checklist
+- Supplied CampusConnect open-book logo with responsive branding
+- Role-aware navigation and protected workspace routes
+- Supabase Auth with server-side role resolution and middleware session refresh
+- Student academic record with marks, attendance, SGPA/CGPA, charts, and print-to-PDF reporting
+- Faculty attendance editing with bulk actions, date selection, warnings, and CSV export
+- Configurable assessment types including CIA, assignment, quiz, mid-sem, practical, and custom types
+- Placement company CRUD, drive creation, lifecycle stages, and selection rounds
+- Explainable placement screening based on CGPA, backlogs, attendance, and drive criteria
+- Student profile with permitted-field editing and professional details
+- Campus Services workspace for timetable, assignments, exams, resources, leave, community, events, exchange, and help desk
+- First-class Lost & Found reporting, search, filters, private claim verification, and status flow
+- Campus Admin customization for modules, permissions, widget visibility, and widget order
+- Working global search, notification panel, unread state, mark-all-read, logout, and back navigation
+- Light/dark theme with saved preference
+- Responsive layouts for desktop, tablet, and mobile screens
 
-- Student: dashboard, profile, academics, campus services, assignments, timetable, resources, leave, community, events, help desk, and Lost & Found claim flow
-- Faculty: assigned subjects, editable attendance, bulk/date/export controls, low-attendance review, configurable marks, assignments, leave review, and reports
-- Placement Admin: company CRUD, eligibility criteria, lifecycle views, and explainable candidate shortlisting
-- Campus Admin: user roles, permissions, module settings, widget order, RFID/maintenance controls, and audit activity
-- Supabase migration starter for profiles, attendance, marks, assignments, submissions, companies, placement drives, notifications, leave, and audit logs
+## Routes
 
-## Supabase setup
+- `/` - Role-aware sign in and demo access
+- `/student-dashboard` - Student home
+- `/student-profile` - Profile and professional information
+- `/academics` - Marks, attendance, results, and performance
+- `/student-services` - Student service hub
+- `/lost-found` - Lost & Found reports and claims
+- `/faculty-dashboard` - Faculty teaching workspace
+- `/placement-admin` - Placement management and smart screening
+- `/campus-admin` - Campus control center
 
-1. Copy `.env.example` to `.env.local`.
-2. Add the Supabase publishable key and any other browser-safe public keys.
-3. Create the matching users and role metadata in Supabase Auth.
+## Local Development
 
-The app reads `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from the environment. Never put the database connection string, service role key, or any password in client code or Git. The direct database connection also requires replacing `[YOUR-PASSWORD]` with the database password and should only be used from a secure server or migration tool.
-
-The current screens use local mock data and browser storage so the UI remains available while the Supabase schema and row-level security policies are being created. Email/password authentication is connected to Supabase when configured; demo accounts and CRUD previews remain available for local development.
-
-## Architecture audit
-
-The existing application is a Next.js App Router client-heavy demo. Before this upgrade, most screens imported fixture data directly from `src/lib/mockData.ts`, `src/lib/facultyMockData.ts`, and `src/lib/placementAdminData.ts`; CRUD previews used `src/lib/demoStore.ts`; Supabase was used for browser email/password Auth and the database had a starter migration. The UI features are present across the student, faculty, placement, campus-admin, profile, academics, and student-services routes, but most records remain demo/localStorage-backed until migrated.
-
-The production direction is now centralized:
-
-```text
-Supabase Database / Auth / Storage
-	-> src/lib/data/repository.ts
-	-> src/lib/auth/permissions.ts + middleware.ts
-	-> role-specific route components
-	-> shared UI
-```
-
-`src/lib/data/repository.ts` is the server data-access boundary with an explicit demo fallback. `src/lib/auth/permissions.ts` is the single permission vocabulary and default policy engine. Real Supabase sessions resolve their role from `profiles` or Auth metadata through `/api/auth/role`; middleware checks that role against protected paths and returns `/forbidden` for unauthorized access. LocalStorage is retained only for demo previews and is not a production authorization mechanism.
-
-For the Supabase CLI workflow:
+Requirements: Node.js 20+ and npm.
 
 ```bash
-npx supabase login
-npx supabase init
-npx supabase link --project-ref tviinfhlaihmapxuklvn
-npx supabase db push
+npm install
+npm run dev
 ```
 
-The second migration adds roles, permissions, role-permission records, module settings, custom-field definitions, profile creation automation, and additional RLS policies. Review the policies for your institution before production launch.
+Open [http://localhost:4028](http://localhost:4028).
 
-## Included product features
+Quality checks:
 
-- Role-aware student, faculty, placement-admin, and campus-admin navigation
-- Student profile and academic routes at `/student-profile` and `/academics`
-- Academic trend, attendance, applications, and deadline summaries
-- Faculty attendance and marks entry with saved updates visible to students
-- Placement discovery, eligibility, candidate lifecycle, and company management views
-- Placement Admin smart shortlist with score, eligibility reasons, manual selection, and saved decisions
-- Campus-admin user access, role editing, service toggles, RFID control, maintenance mode, and audit feed
-- Community highlights for lost-and-found and resource exchange
-- Responsive sidebar, mobile navigation, notifications, logout, and RFID sync status indicator
-- Working global search with authorized result filtering, interactive notifications, and read-all support
-- Reusable back navigation across authenticated screens
+```bash
+npm run type-check
+npm run lint
+npm run build
+```
 
-## Demo accounts
-
-Use these accounts on the local login screen:
+## Demo Accounts
 
 | Role | Email | Password |
 | --- | --- | --- |
@@ -102,29 +71,67 @@ Use these accounts on the local login screen:
 | Placement Admin | `placement@campusconnect.edu` | `placement123` |
 | Campus Admin | `admin@campusconnect.edu` | `admin123` |
 
-## Test the main workflows
+Demo changes use browser storage so the workflows remain usable without a backend session. Demo mode is for development only.
 
-1. Sign in as Faculty and edit attendance or internal marks, then save.
-2. Sign in as Student to see the latest faculty update summary.
-3. Sign in as Placement Admin to add, edit, or delete partner companies.
-4. Sign in as Campus Admin to manage access, roles, service availability, RFID sync, and maintenance mode.
-5. Sign in as Student and open **Campus Services** to switch between the requested college workflows.
-6. Sign in as Placement Admin to create a drive, move it through lifecycle stages, and add selection rounds.
-7. Use the topbar search and notification controls from any workspace; use the Back control to return to the previous page.
+## Architecture
 
-## Production hardening
+```text
+Supabase Auth / Database / Storage
+              |
+     Server repository layer
+              |
+     RBAC and route validation
+              |
+     Role-specific React screens
+              |
+        Shared UI components
+```
 
-The local demo uses browser storage for CRUD previews and Supabase Auth for configured email/password login. The migration at `supabase/migrations/001_core_schema.sql` provides the relational starting point for cloud persistence and enables row-level security on sensitive tables. Apply it with the Supabase CLI after linking the project, then add policies for any additional modules before deploying.
+- `src/lib/data/repository.ts` is the server data-access boundary with an explicit demo fallback.
+- `src/lib/data/dataProvider.ts` exposes the common provider contract.
+- `src/lib/auth/permissions.ts` defines the centralized `module.action` permission vocabulary.
+- `middleware.ts` refreshes Supabase sessions and blocks unauthorized paths.
+- `src/lib/validation.ts` centralizes required fields, email, phone, date, CGPA, and marks validation.
+- `src/lib/supabase/storage.ts` validates file type, size, bucket, and user-scoped paths.
+- `src/lib/demoStore.ts` is intentionally limited to local demo persistence.
 
-Uploads currently use browser file controls for the demo. Production uploads should use private Supabase Storage buckets with MIME-type, size, and role checks for resumes, assignment files, profile photos, lost-and-found images, company logos, and event media. Never expose the database password or service-role key in browser code.
+## Supabase Setup
 
-The application includes a shared upload helper that allows approved image/document types up to 10 MB and creates user-scoped paths. The server Supabase helper and middleware refresh Auth cookies for real Supabase sessions. Demo credentials intentionally remain client-only previews and are not a replacement for production authorization.
+Copy `.env.example` to `.env.local` and set:
 
-Demo CRUD changes are stored in the browser's local storage. Production persistence should use Supabase tables protected by row-level security policies.
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
 
-## Run locally
+The database password, service-role key, and access tokens must remain server-only. Never commit `.env`, `.env.local`, or secrets.
+
+The project includes migrations for profiles, roles, permissions, academic records, assignments, submissions, placement workflows, notifications, leave, events, resources, Lost & Found, community, support tickets, clubs, custom fields, settings, audit logs, and private Storage buckets.
 
 ```bash
-npm install
-npm run dev
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase db push
 ```
+
+Review the RLS policies for your institution before production use. Supabase Storage policies expect files under a user-scoped path such as `USER_ID/file-name.pdf`.
+
+## Deploy To Vercel
+
+Vercel is sufficient for this Next.js application. Supabase provides Auth, PostgreSQL, Storage, and RLS.
+
+1. Import the GitHub repository into Vercel.
+2. Keep the framework as Next.js and the root directory as `./`.
+3. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for Production, Preview, and Development as needed.
+4. Deploy and copy the resulting domain.
+5. In Supabase, open **Authentication > URL Configuration**, set the Vercel domain as the Site URL, and add the local and production redirect URLs.
+
+Render is not required unless a separate long-running RFID worker, scheduled job, or independent API is introduced.
+
+## Production Status
+
+The UI and demo workflows are implemented and the Supabase schema/RLS foundation is included. Some existing screens still use demo fixtures or browser storage while their individual repository queries are being migrated. Before production launch, connect each mutation to Supabase, review all RLS policies, configure private Storage buckets, add monitoring, and rotate any credentials that were shared during development.
+
+## License
+
+Private project. All rights reserved by the project owner.
