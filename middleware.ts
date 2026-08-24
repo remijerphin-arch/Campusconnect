@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { canAccessPath } from '@/lib/auth/permissions';
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next({ request });
@@ -20,7 +21,15 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const { data: authData } = await supabase.auth.getUser();
+  const protectedPath = request.nextUrl.pathname;
+  if (authData.user && protectedPath !== '/' && protectedPath !== '/forbidden' && !protectedPath.startsWith('/api')) {
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', authData.user.id).single();
+    const role = profile?.role ?? authData.user.user_metadata?.role ?? 'student';
+    if (!canAccessPath(role, protectedPath)) {
+      return NextResponse.redirect(new URL('/forbidden', request.url));
+    }
+  }
   return response;
 }
 

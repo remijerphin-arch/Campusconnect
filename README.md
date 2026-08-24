@@ -33,6 +33,22 @@ The app reads `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_K
 
 The current screens use local mock data and browser storage so the UI remains available while the Supabase schema and row-level security policies are being created. Email/password authentication is connected to Supabase when configured; demo accounts and CRUD previews remain available for local development.
 
+## Architecture audit
+
+The existing application is a Next.js App Router client-heavy demo. Before this upgrade, most screens imported fixture data directly from `src/lib/mockData.ts`, `src/lib/facultyMockData.ts`, and `src/lib/placementAdminData.ts`; CRUD previews used `src/lib/demoStore.ts`; Supabase was used for browser email/password Auth and the database had a starter migration. The UI features are present across the student, faculty, placement, campus-admin, profile, academics, and student-services routes, but most records remain demo/localStorage-backed until migrated.
+
+The production direction is now centralized:
+
+```text
+Supabase Database / Auth / Storage
+	-> src/lib/data/repository.ts
+	-> src/lib/auth/permissions.ts + middleware.ts
+	-> role-specific route components
+	-> shared UI
+```
+
+`src/lib/data/repository.ts` is the server data-access boundary with an explicit demo fallback. `src/lib/auth/permissions.ts` is the single permission vocabulary and default policy engine. Real Supabase sessions resolve their role from `profiles` or Auth metadata through `/api/auth/role`; middleware checks that role against protected paths and returns `/forbidden` for unauthorized access. LocalStorage is retained only for demo previews and is not a production authorization mechanism.
+
 For the Supabase CLI workflow:
 
 ```bash
@@ -41,6 +57,8 @@ npx supabase init
 npx supabase link --project-ref tviinfhlaihmapxuklvn
 npx supabase db push
 ```
+
+The second migration adds roles, permissions, role-permission records, module settings, custom-field definitions, profile creation automation, and additional RLS policies. Review the policies for your institution before production launch.
 
 ## Included product features
 

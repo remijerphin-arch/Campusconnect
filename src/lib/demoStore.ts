@@ -1,10 +1,13 @@
 import type { MarksEntry, StudentAttendanceRow } from '@/lib/facultyMockData';
 import type { Company } from '@/lib/placementAdminData';
+import type { Permission } from '@/lib/auth/permissions';
 
 const ATTENDANCE_KEY = 'campusconnect-attendance-overrides';
 const MARKS_KEY = 'campusconnect-marks-overrides';
 const COMPANIES_KEY = 'campusconnect-companies';
 const ADMIN_SETTINGS_KEY = 'campusconnect-admin-settings';
+const MODULE_SETTINGS_KEY = 'campusconnect-module-settings';
+const PERMISSION_SETTINGS_KEY = 'campusconnect-permission-settings';
 
 export interface AdminSettings {
   services: {
@@ -59,5 +62,27 @@ export function readAdminSettings(): AdminSettings | null {
 
 export function saveAdminSettings(value: AdminSettings) {
   window.localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(value));
+  window.dispatchEvent(new Event('campusconnect-data-updated'));
+}
+
+export function readModuleSettings(): Record<string, boolean> | null {
+  if (typeof window === 'undefined') return null;
+  const value = window.localStorage.getItem(MODULE_SETTINGS_KEY);
+  return value ? JSON.parse(value) : null;
+}
+
+export function saveModuleSettings(value: Record<string, boolean>) {
+  window.localStorage.setItem(MODULE_SETTINGS_KEY, JSON.stringify(value));
+  window.dispatchEvent(new Event('campusconnect-data-updated'));
+}
+
+export function readPermissionSettings(): Record<string, Permission[]> | null {
+  if (typeof window === 'undefined') return null;
+  const value = window.localStorage.getItem(PERMISSION_SETTINGS_KEY);
+  return value ? JSON.parse(value) : null;
+}
+
+export function savePermissionSettings(value: Record<string, Permission[]>) {
+  window.localStorage.setItem(PERMISSION_SETTINGS_KEY, JSON.stringify(value));
   window.dispatchEvent(new Event('campusconnect-data-updated'));
 }
