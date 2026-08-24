@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 
@@ -9,9 +9,28 @@ interface AppLayoutProps {
   currentPath: string;
 }
 
+const rolePaths = {
+  student: ['/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities'],
+  faculty: ['/faculty-dashboard'],
+  placement_admin: ['/placement-admin'],
+  campus_admin: ['/campus-admin', '/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/faculty-dashboard', '/placement-admin'],
+} as const;
+
 export default function AppLayout({ children, currentPath }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [accessChecked, setAccessChecked] = useState(false);
+
+  useEffect(() => {
+    const role = window.localStorage.getItem('campusconnect-demo-role') as keyof typeof rolePaths | null;
+    if (!role || !rolePaths[role].includes(currentPath as never)) {
+      window.location.href = '/';
+      return;
+    }
+    setAccessChecked(true);
+  }, [currentPath]);
+
+  if (!accessChecked) return null;
 
   return (
     <div className="min-h-screen bg-transparent">

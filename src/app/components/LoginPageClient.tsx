@@ -53,6 +53,7 @@ export default function LoginPageClient() {
     );
 
     if (matched) {
+      window.localStorage.setItem('campusconnect-demo-role', matched.roleKey);
       toast.success(`Welcome, ${matched.name}`);
       const route =
         matched.roleKey === 'student'
@@ -75,6 +76,7 @@ export default function LoginPageClient() {
       });
 
       if (!error) {
+        window.localStorage.setItem('campusconnect-demo-role', selectedRole);
         toast.success('Welcome back to CampusConnect');
         window.location.href =
           selectedRole === 'student'

@@ -32,7 +32,6 @@ const navItemsByPath = {
   ],
   '/faculty-dashboard': [
     { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
-    { href: '/student-services', label: 'Class Services', icon: CalendarCheck },
   ],
   '/placement-admin': [
     { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
@@ -123,6 +122,7 @@ export default function Sidebar({
     if (supabase) {
       await supabase.auth.signOut();
     }
+    window.localStorage.removeItem('campusconnect-demo-role');
     window.location.href = '/';
   };
 
