@@ -14,6 +14,7 @@ CampusConnect is a cloud-based integrated student platform that brings academics
 - Faculty editing for attendance and internal marks with student dashboard updates
 - Placement company management with add, edit, delete, and opening-count controls
 - Explainable AI-assisted placement screening that ranks applicants against drive criteria
+- Placement drive operations with create, stage updates, and selection-round tracking
 - Student profile editing with permitted-field protection and professional profile details
 - Academic module with subject marks, attendance, CGPA/SGPA summaries, performance charts, and print-to-PDF reporting
 - Campus-admin controls for enabling, disabling, and reordering student dashboard widgets
@@ -87,6 +88,8 @@ The second migration adds roles, permissions, role-permission records, module se
 - Campus-admin user access, role editing, service toggles, RFID control, maintenance mode, and audit feed
 - Community highlights for lost-and-found and resource exchange
 - Responsive sidebar, mobile navigation, notifications, logout, and RFID sync status indicator
+- Working global search with authorized result filtering, interactive notifications, and read-all support
+- Reusable back navigation across authenticated screens
 
 ## Demo accounts
 
@@ -106,6 +109,8 @@ Use these accounts on the local login screen:
 3. Sign in as Placement Admin to add, edit, or delete partner companies.
 4. Sign in as Campus Admin to manage access, roles, service availability, RFID sync, and maintenance mode.
 5. Sign in as Student and open **Campus Services** to switch between the requested college workflows.
+6. Sign in as Placement Admin to create a drive, move it through lifecycle stages, and add selection rounds.
+7. Use the topbar search and notification controls from any workspace; use the Back control to return to the previous page.
 
 ## Production hardening
 
