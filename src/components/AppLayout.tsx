@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
-import BackButton from '@/components/BackButton';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -48,7 +47,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
           onCollapseToggle={() => setSidebarCollapsed((value) => !value)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8"><div className="mx-auto mb-4 max-w-7xl"><BackButton /></div>{children}</main>
+        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );
