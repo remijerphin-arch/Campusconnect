@@ -76,14 +76,17 @@ export default function LoginPageClient() {
       });
 
       if (!error) {
-        window.localStorage.setItem('campusconnect-demo-role', selectedRole);
+        const roleResponse = await fetch('/api/auth/role');
+        const roleData = (await roleResponse.json()) as { role?: UserRole };
+        const role = roleData.role ?? 'student';
+        window.localStorage.setItem('campusconnect-demo-role', role);
         toast.success('Welcome back to CampusConnect');
         window.location.href =
-          selectedRole === 'student'
+          role === 'student'
             ? '/student-dashboard'
-            : selectedRole === 'faculty'
+            : role === 'faculty'
               ? '/faculty-dashboard'
-              : selectedRole === 'placement_admin'
+              : role === 'placement_admin'
                 ? '/placement-admin'
                 : '/campus-admin';
         return;
