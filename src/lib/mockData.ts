@@ -20,6 +20,36 @@ export const MOCK_STUDENT: UserProfile = {
   batch: '2021-2027',
 };
 
+export const MOCK_STUDENT_DETAILS = {
+  ...MOCK_STUDENT,
+  phone: '+91 9876543210',
+  program: 'B.Tech Computer Science and Engineering',
+  section: 'A',
+  academicYear: '2026-27',
+  dateOfBirth: '2004-06-18',
+  address: '12 Lake View Road, Bengaluru',
+  emergencyContact: '+91 9876501234',
+  skills: ['TypeScript', 'Python', 'SQL'],
+  certifications: ['AWS Cloud Practitioner', 'Google Data Analytics'],
+  languages: ['English', 'Hindi', 'Malayalam'],
+  achievements: ['Hackathon finalist 2025', 'Department merit award'],
+  projects: ['CampusConnect', 'RFID Attendance Monitor'],
+  linkedin: 'linkedin.com/in/arjun-sharma',
+  github: 'github.com/arjun-sharma',
+  portfolio: 'arjunsharma.dev',
+  resume: 'arjun-sharma-resume.pdf',
+};
+
+export const MOCK_UPCOMING_CLASSES = [
+  { id: 'class-1', subject: 'Machine Learning', faculty: 'Dr. Meera Nair', time: '10:00 AM', room: 'Lab 3' },
+  { id: 'class-2', subject: 'Compiler Design', faculty: 'Prof. R. Iyer', time: '1:30 PM', room: 'Room 204' },
+];
+
+export const MOCK_UPCOMING_EXAMS = [
+  { id: 'exam-1', subject: 'Compiler Design', date: '2026-09-04', mode: 'Written' },
+  { id: 'exam-2', subject: 'Machine Learning', date: '2026-09-08', mode: 'Practical' },
+];
+
 export const MOCK_FACULTY: UserProfile = {
   id: 'faculty-cse-112',
   email: 'dr.meera@campusconnect.edu',

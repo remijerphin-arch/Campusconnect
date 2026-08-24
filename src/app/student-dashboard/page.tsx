@@ -5,11 +5,13 @@ import NotificationsPanel from '@/app/student-dashboard/components/Notifications
 import PlacementPipelineSection from '@/app/student-dashboard/components/PlacementPipelineSection';
 import UpcomingDeadlines from '@/app/student-dashboard/components/UpcomingDeadlines';
 import FacultyUpdatesPanel from '@/app/student-dashboard/components/FacultyUpdatesPanel';
+import StudentHomeOverview from '@/app/student-dashboard/components/StudentHomeOverview';
 
 export default function StudentDashboardPage() {
   return (
     <AppLayout currentPath="/student-dashboard">
       <div className="space-y-6">
+        <StudentHomeOverview />
         <DashboardBentoGrid />
         <AttendanceSection />
         <FacultyUpdatesPanel />

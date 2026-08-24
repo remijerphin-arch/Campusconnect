@@ -13,6 +13,14 @@ CampusConnect is a cloud-based integrated student platform that brings academics
 - Campus admin control center for access, services, integrations, and audit activity
 - Faculty editing for attendance and internal marks with student dashboard updates
 - Placement company management with add, edit, delete, and opening-count controls
+- Student profile editing with permitted-field protection and professional profile details
+- Academic module with subject marks, attendance, CGPA/SGPA summaries, performance charts, and print-to-PDF reporting
+- Campus-admin controls for enabling, disabling, and reordering student dashboard widgets
+- Student services workspace covering attendance, timetable, assignments, exams, resources, announcements, leave, community, lost-and-found, events, exchange, and help desk
+- Faculty assignment creation, leave review, attendance export, and marks/attendance workflows
+- Admin module management and role permission matrix preview
+- Persistent light/dark theme preference
+- Supabase migration starter for profiles, attendance, marks, assignments, submissions, companies, placement drives, notifications, leave, and audit logs
 
 ## Supabase setup
 
@@ -35,6 +43,7 @@ supabase link --project-ref tviinfhlaihmapxuklvn
 ## Included product features
 
 - Role-aware student, faculty, placement-admin, and campus-admin navigation
+- Student profile and academic routes at `/student-profile` and `/academics`
 - Academic trend, attendance, applications, and deadline summaries
 - Faculty attendance and marks entry with saved updates visible to students
 - Placement discovery, eligibility, candidate lifecycle, and company management views
@@ -59,6 +68,13 @@ Use these accounts on the local login screen:
 2. Sign in as Student to see the latest faculty update summary.
 3. Sign in as Placement Admin to add, edit, or delete partner companies.
 4. Sign in as Campus Admin to manage access, roles, service availability, RFID sync, and maintenance mode.
+5. Sign in as Student and open **Campus Services** to switch between the requested college workflows.
+
+## Production hardening
+
+The local demo uses browser storage for CRUD previews and Supabase Auth for configured email/password login. The migration at `supabase/migrations/001_core_schema.sql` provides the relational starting point for cloud persistence and enables row-level security on sensitive tables. Apply it with the Supabase CLI after linking the project, then add policies for any additional modules before deploying.
+
+Uploads currently use browser file controls for the demo. Production uploads should use private Supabase Storage buckets with MIME-type, size, and role checks for resumes, assignment files, profile photos, lost-and-found images, company logos, and event media. Never expose the database password or service-role key in browser code.
 
 Demo CRUD changes are stored in the browser's local storage. Production persistence should use Supabase tables protected by row-level security policies.
 

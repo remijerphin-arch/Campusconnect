@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Bell, Menu, PanelLeft, Search } from 'lucide-react';
 import { MOCK_NOTIFICATIONS } from '@/lib/mockData';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface TopbarProps {
   currentPath: string;
@@ -21,6 +22,7 @@ export default function Topbar({
     <header className="fixed inset-x-0 top-0 z-20 border-b bg-background/80 backdrop-blur">
       <div className="flex h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button type="button" className="lg:hidden" onClick={onMenuClick}>
             <Menu size={20} />
           </button>

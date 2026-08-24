@@ -7,6 +7,7 @@ import MarksInputForm from '@/app/faculty-dashboard/components/MarksInputForm';
 import StudentList from '@/app/faculty-dashboard/components/StudentList';
 import SubjectRoster from '@/app/faculty-dashboard/components/SubjectRoster';
 import { FACULTY_SUBJECTS, type FacultySubject } from '@/lib/facultyMockData';
+import FacultyOperationsPanel from '@/app/faculty-dashboard/components/FacultyOperationsPanel';
 
 export default function FacultyDashboardPage() {
   const [activeSubject, setActiveSubject] = useState<FacultySubject>(FACULTY_SUBJECTS[0]);
@@ -24,6 +25,7 @@ export default function FacultyDashboardPage() {
             from the same dashboard.
           </p>
         </div>
+        <FacultyOperationsPanel />
         <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
           <div className="space-y-6">
             <SubjectRoster

@@ -25,15 +25,38 @@ interface SidebarProps {
 const navItemsByPath = {
   '/student-dashboard': [
     { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/student-profile', label: 'My Profile', icon: Users },
+    { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/faculty-dashboard': [
     { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
+    { href: '/student-services', label: 'Class Services', icon: CalendarCheck },
   ],
   '/placement-admin': [
     { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
   ],
   '/placement-opportunities': [
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  ],
+  '/student-profile': [
+    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/student-profile', label: 'My Profile', icon: Users },
+    { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  ],
+  '/academics': [
+    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/student-profile', label: 'My Profile', icon: Users },
+    { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  ],
+  '/student-services': [
+    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/student-profile', label: 'My Profile', icon: Users },
+    { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/campus-admin': [
@@ -69,6 +92,21 @@ const workspaceSummary = {
     title: 'Campus control center',
     description: 'Manage access, services, integrations, and campus-wide operations.',
     status: 'Admin view',
+  },
+  '/student-profile': {
+    title: 'Student profile',
+    description: 'Keep your permitted personal and professional details up to date.',
+    status: 'Student view',
+  },
+  '/academics': {
+    title: 'Academic record',
+    description: 'Review subjects, marks, attendance, examinations, and performance trends.',
+    status: 'Student view',
+  },
+  '/student-services': {
+    title: 'Campus services',
+    description: 'Attendance, timetable, assignments, resources, community, events, and support.',
+    status: 'Student view',
   },
 } as const;
 

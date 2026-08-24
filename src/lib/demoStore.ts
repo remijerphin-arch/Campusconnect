@@ -15,6 +15,7 @@ export interface AdminSettings {
   };
   rfidEnabled: boolean;
   maintenanceMode: boolean;
+  studentWidgets: string[];
 }
 
 export function readAttendanceOverrides(): Record<string, StudentAttendanceRow[]> {

@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.dark {
+  --background: 222 32% 10%;
+  --foreground: 210 40% 96%;
+  --muted: 222 25% 16%;
+  --muted-foreground: 215 20% 68%;
+  --border: 217 22% 25%;
+  --card: 222 28% 13%;
+  --primary-foreground: 222 32% 10%;
+}
+
 :root {
   --background: 36 57% 98%;
   --foreground: 214 38% 12%;
