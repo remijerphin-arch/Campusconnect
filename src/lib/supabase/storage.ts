@@ -11,12 +11,20 @@ const allowedTypes = new Set([
   'text/plain',
 ]);
 
+export const CAMPUS_STORAGE_BUCKETS = [
+  'avatars', 'resumes', 'assignments', 'submissions', 'resources',
+  'lost-found', 'events', 'company-logos', 'support-attachments',
+] as const;
+
 export async function uploadCampusFile(
   supabase: SupabaseClient,
   bucket: string,
   userId: string,
   file: File,
 ) {
+  if (!CAMPUS_STORAGE_BUCKETS.includes(bucket as (typeof CAMPUS_STORAGE_BUCKETS)[number])) {
+    return { error: new Error('Invalid storage bucket') };
+  }
   if (!allowedTypes.has(file.type)) {
     return { error: new Error('Unsupported file type') };
   }

@@ -18,9 +18,25 @@ CampusConnect is a cloud-based integrated student platform that brings academics
 - Academic module with subject marks, attendance, CGPA/SGPA summaries, performance charts, and print-to-PDF reporting
 - Campus-admin controls for enabling, disabling, and reordering student dashboard widgets
 - Student services workspace covering attendance, timetable, assignments, exams, resources, announcements, leave, community, lost-and-found, events, exchange, and help desk
+- First-class `/lost-found` workspace with lost/found reports, search, filters, private claim verification, and moderator status flow
 - Faculty assignment creation, leave review, attendance export, and marks/attendance workflows
+- Faculty attendance validation, bulk present, date selection, low-attendance review, CSV history export, and configurable assessment types
 - Admin module management and role permission matrix preview
 - Persistent light/dark theme preference
+- Shared validation utilities for required fields, email, phone, dates, CGPA, marks, and upload limits
+- Unified `dataProvider`/repository boundary separating Supabase data from demo fallback data
+- Centralized storage bucket allowlist and user-scoped upload validation
+
+## Validation and error handling
+
+Shared validation utilities cover required values, emails, phones, date ranges, CGPA, marks, and file restrictions. Interactive workflows show toast feedback, confirmation dialogs, empty states, disabled states, and explicit success/error messages; exports are generated only from authorized role surfaces.
+
+## Testing checklist
+
+- Student: dashboard, profile, academics, campus services, assignments, timetable, resources, leave, community, events, help desk, and Lost & Found claim flow
+- Faculty: assigned subjects, editable attendance, bulk/date/export controls, low-attendance review, configurable marks, assignments, leave review, and reports
+- Placement Admin: company CRUD, eligibility criteria, lifecycle views, and explainable candidate shortlisting
+- Campus Admin: user roles, permissions, module settings, widget order, RFID/maintenance controls, and audit activity
 - Supabase migration starter for profiles, attendance, marks, assignments, submissions, companies, placement drives, notifications, leave, and audit logs
 
 ## Supabase setup

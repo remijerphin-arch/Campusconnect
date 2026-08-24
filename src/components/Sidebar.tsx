@@ -8,6 +8,7 @@ import {
   CalendarCheck,
   LayoutDashboard,
   LogOut,
+  SearchCheck,
   Shield,
   Users,
   X,
@@ -28,10 +29,12 @@ const navItemsByPath = {
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
     { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/faculty-dashboard': [
     { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
+    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
   ],
   '/placement-admin': [
     { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
@@ -56,6 +59,7 @@ const navItemsByPath = {
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
     { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/campus-admin': [
@@ -63,6 +67,7 @@ const navItemsByPath = {
     { href: '/student-dashboard', label: 'Student Services', icon: LayoutDashboard },
     { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
     { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
+    { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
   ],
 } as const;
 
@@ -106,6 +111,11 @@ const workspaceSummary = {
     title: 'Campus services',
     description: 'Attendance, timetable, assignments, resources, community, events, and support.',
     status: 'Student view',
+  },
+  '/lost-found': {
+    title: 'Lost & Found',
+    description: 'Report, search, and privately verify campus item claims.',
+    status: 'Campus service',
   },
 } as const;
 

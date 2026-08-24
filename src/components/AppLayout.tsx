@@ -10,10 +10,10 @@ interface AppLayoutProps {
 }
 
 const rolePaths = {
-  student: ['/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities'],
-  faculty: ['/faculty-dashboard'],
+  student: ['/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/lost-found'],
+  faculty: ['/faculty-dashboard', '/lost-found'],
   placement_admin: ['/placement-admin'],
-  campus_admin: ['/campus-admin', '/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/faculty-dashboard', '/placement-admin'],
+  campus_admin: ['/campus-admin', '/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/faculty-dashboard', '/placement-admin', '/lost-found'],
 } as const;
 
 export default function AppLayout({ children, currentPath }: AppLayoutProps) {

@@ -32,12 +32,6 @@ insert into public.role_permissions (role_id, permission_key, allowed)
 select 'campus_admin'::public.app_role, key, true from public.permissions
 on conflict (role_id, permission_key) do update set allowed = true;
 
-insert into public.role_permissions (role_id, permission_key, allowed) values
-  ('student', 'attendance.view', true), ('student', 'marks.view', true), ('student', 'placements.view', true), ('student', 'lost_found.view', true), ('student', 'lost_found.create', true),
-  ('faculty', 'attendance.view', true), ('faculty', 'attendance.create', true), ('faculty', 'attendance.edit', true), ('faculty', 'attendance.delete', true), ('faculty', 'marks.view', true), ('faculty', 'marks.create', true), ('faculty', 'marks.edit', true), ('faculty', 'marks.delete', true), ('faculty', 'lost_found.view', true),
-  ('placement_admin', 'placements.view', true), ('placement_admin', 'placements.create', true), ('placement_admin', 'placements.edit', true), ('placement_admin', 'placements.delete', true), ('placement_admin', 'lost_found.view', true)
-on conflict (role_id, permission_key) do update set allowed = excluded.allowed;
-
 create or replace function public.current_user_role()
 returns public.app_role
 language sql stable security definer set search_path = public

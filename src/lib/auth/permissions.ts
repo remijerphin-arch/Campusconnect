@@ -50,8 +50,8 @@ export function getDefaultPermissions(role: UserRole) {
 export function canAccessPath(role: UserRole, pathname: string) {
   if (pathname === '/forbidden') return true;
   if (role === 'campus_admin') return true;
-  if (role === 'student') return pathname === '/student-dashboard' || pathname === '/student-profile' || pathname === '/academics' || pathname === '/student-services' || pathname === '/placement-opportunities';
-  if (role === 'faculty') return pathname === '/faculty-dashboard';
+  if (role === 'student') return pathname === '/student-dashboard' || pathname === '/student-profile' || pathname === '/academics' || pathname === '/student-services' || pathname === '/placement-opportunities' || pathname === '/lost-found';
+  if (role === 'faculty') return pathname === '/faculty-dashboard' || pathname === '/lost-found';
   if (role === 'placement_admin') return pathname === '/placement-admin';
   return false;
 }
