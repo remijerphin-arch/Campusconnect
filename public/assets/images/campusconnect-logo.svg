@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>CampusConnect logo</title>
+  <path d="M78 126L256 252V444L78 318V126Z" fill="#FDFCFA" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M434 126L256 252V444L434 318V126Z" fill="#6EAEDC" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M78 126L256 252L434 126" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M78 318L256 444L434 318" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M78 126L42 158V350L256 474V444L78 318V126Z" fill="#FDFCFA" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M434 126L470 158V350L256 474V444L434 318V126Z" fill="#75B9E6" stroke="#2E74B5" stroke-width="10" stroke-linejoin="round"/>
+</svg>
