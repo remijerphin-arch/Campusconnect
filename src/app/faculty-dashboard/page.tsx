@@ -8,6 +8,7 @@ import StudentList from '@/app/faculty-dashboard/components/StudentList';
 import SubjectRoster from '@/app/faculty-dashboard/components/SubjectRoster';
 import { FACULTY_SUBJECTS, type FacultySubject } from '@/lib/facultyMockData';
 import FacultyOperationsPanel from '@/app/faculty-dashboard/components/FacultyOperationsPanel';
+import StudentDirectory from '@/app/faculty-dashboard/components/StudentDirectory';
 
 export default function FacultyDashboardPage() {
   const [activeSubject, setActiveSubject] = useState<FacultySubject>(FACULTY_SUBJECTS[0]);
@@ -26,6 +27,7 @@ export default function FacultyDashboardPage() {
           </p>
         </div>
         <FacultyOperationsPanel />
+        <StudentDirectory />
         <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
           <div className="space-y-6">
             <SubjectRoster

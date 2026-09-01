@@ -1,16 +1,20 @@
 'use client';
 
-import { Briefcase, CalendarClock, MapPin, Users } from 'lucide-react';
+import { Briefcase, CalendarClock, Check, MapPin, Users } from 'lucide-react';
 import type { PlacementOpportunity } from '@/types';
 
 interface OpportunityCardProps {
   opportunity: PlacementOpportunity;
   onInspect: (opportunity: PlacementOpportunity) => void;
+  onApply: (opportunity: PlacementOpportunity) => void;
+  applied: boolean;
 }
 
 export default function OpportunityCard({
   opportunity,
   onInspect,
+  onApply,
+  applied,
 }: OpportunityCardProps) {
   return (
     <div className="rounded-[1.75rem] border bg-card p-5 shadow-card">
@@ -51,19 +55,35 @@ export default function OpportunityCard({
           </span>
         ))}
       </div>
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-6 flex items-center justify-between gap-3">
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${opportunity.eligibilityStatus === 'eligible' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}
         >
           {opportunity.eligibilityStatus}
         </span>
-        <button
-          type="button"
-          onClick={() => onInspect(opportunity)}
-          className="rounded-full border px-4 py-2 text-sm font-medium"
-        >
-          View eligibility
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onApply(opportunity)}
+            disabled={applied || opportunity.eligibilityStatus !== 'eligible'}
+            className={`rounded-full px-4 py-2 text-sm font-medium ${applied ? 'bg-success/10 text-success' : opportunity.eligibilityStatus !== 'eligible' ? 'cursor-not-allowed bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground'}`}
+          >
+            {applied ? (
+              <span className="inline-flex items-center gap-2">
+                <Check size={14} /> Applied
+              </span>
+            ) : (
+              opportunity.eligibilityStatus === 'eligible' ? 'Apply now' : 'Not eligible'
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => onInspect(opportunity)}
+            className="rounded-full border px-4 py-2 text-sm font-medium"
+          >
+            View eligibility
+          </button>
+        </div>
       </div>
     </div>
   );

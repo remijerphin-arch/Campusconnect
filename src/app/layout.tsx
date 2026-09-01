@@ -28,7 +28,18 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${plusJakarta.variable} font-sans antialiased`}>
         {children}
-        <Toaster richColors position="top-right" />
+        <Toaster
+          richColors
+          position="bottom-right"
+          closeButton
+          toastOptions={{
+            duration: 5000,
+            classNames: {
+              toast:
+                'border border-border bg-card text-card-foreground shadow-lg',
+            },
+          }}
+        />
       </body>
     </html>
   );

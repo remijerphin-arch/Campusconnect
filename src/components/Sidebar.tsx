@@ -6,6 +6,7 @@ import {
   Briefcase,
   Building2,
   CalendarCheck,
+  ChefHat,
   LayoutDashboard,
   LogOut,
   SearchCheck,
@@ -29,29 +30,39 @@ const navItemsByPath = {
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
     { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
     { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/faculty-dashboard': [
     { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
     { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
   ],
   '/placement-admin': [
     { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
   ],
   '/placement-opportunities': [
+    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { href: '/student-profile', label: 'My Profile', icon: Users },
+    { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
+    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/student-profile': [
     { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/academics': [
     { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/student-services': [
@@ -59,14 +70,30 @@ const navItemsByPath = {
     { href: '/student-profile', label: 'My Profile', icon: Users },
     { href: '/academics', label: 'Academics', icon: BookOpen },
     { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+    { href: '/canteen', label: 'Canteen', icon: ChefHat },
     { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/campus-admin': [
     { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
-    { href: '/student-dashboard', label: 'Student Services', icon: LayoutDashboard },
+    { href: '/campus-admin/canteen', label: 'Canteen Management', icon: ChefHat },
+    { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
+    { href: '/student-services', label: 'Student Services', icon: CalendarCheck },
+    { href: '/student-profile', label: 'Student Profile', icon: Users },
     { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
     { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+    { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
+  ],
+  '/campus-admin/canteen': [
+    { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
+    { href: '/campus-admin/canteen', label: 'Canteen Management', icon: ChefHat },
+    { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
+    { href: '/student-services', label: 'Student Services', icon: CalendarCheck },
+    { href: '/student-profile', label: 'Student Profile', icon: Users },
+    { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
+    { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
+    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
     { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
   ],
 } as const;
@@ -112,6 +139,16 @@ const workspaceSummary = {
     description: 'Attendance, timetable, assignments, resources, community, events, and support.',
     status: 'Student view',
   },
+  '/canteen': {
+    title: 'Canteen menu',
+    description: 'View the published canteen menu for the current date and compare it to the official board.',
+    status: 'Student view',
+  },
+  '/campus-admin/canteen': {
+    title: 'Canteen management',
+    description: 'Manage daily menu items, availability, dates, and publishing for campus canteens.',
+    status: 'Admin view',
+  },
   '/lost-found': {
     title: 'Lost & Found',
     description: 'Report, search, and privately verify campus item claims.',
@@ -143,7 +180,7 @@ export default function Sidebar({
         onClick={onMobileClose}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r bg-card/95 backdrop-blur transition-transform duration-200 lg:translate-x-0 ${collapsed ? 'lg:w-24' : ''} ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r bg-card/95 backdrop-blur transition-transform duration-200 ${collapsed ? 'lg:w-24' : ''} ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between border-b px-5 py-5">
           <div className="flex items-center gap-3">
@@ -157,7 +194,7 @@ export default function Sidebar({
               </div>
             )}
           </div>
-          <button type="button" className="lg:hidden" onClick={onMobileClose}>
+          <button type="button" onClick={onMobileClose} aria-label="Close sidebar" title="Close sidebar">
             <X size={18} />
           </button>
         </div>
@@ -186,9 +223,10 @@ export default function Sidebar({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${active ? 'bg-primary text-primary-foreground shadow-card' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                  title={collapsed ? item.label : undefined}
+                  className={`group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 ${active ? 'bg-primary text-primary-foreground shadow-card' : 'text-muted-foreground hover:bg-muted hover:text-foreground'} ${collapsed ? 'justify-center px-2' : ''}`}
                 >
-                  <Icon size={18} />
+                  <Icon size={18} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                   {!collapsed && <span>{item.label}</span>}
                 </Link>
               );

@@ -57,7 +57,7 @@ export default function DashboardBentoGrid() {
             <h2 className="mt-2 text-2xl font-bold">Lost-and-found and resource exchange</h2>
           </div>
           <Link
-            href="/placement-opportunities"
+            href="/lost-found"
             className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium"
           >
             Explore more

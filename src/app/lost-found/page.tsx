@@ -7,7 +7,19 @@ import { toast } from 'sonner';
 
 type ItemStatus = 'Open' | 'Claim Pending' | 'Verification' | 'Approved' | 'Rejected' | 'Returned' | 'Closed';
 type ReportType = 'lost' | 'found';
-interface Item { id: string; title: string; category: string; description: string; type: ReportType; location: string; date: string; status: ItemStatus; storage?: string; }
+type Section = 'all' | 'lost' | 'found' | 'my-reports' | 'my-claims';
+
+interface Item {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  type: ReportType;
+  location: string;
+  date: string;
+  status: ItemStatus;
+  storage?: string;
+}
 
 const initialItems: Item[] = [{ id: 'lf-1', title: 'Black calculator', category: 'Electronics', description: 'Scientific calculator found after the afternoon lab.', type: 'found', location: 'Block B', date: '2026-08-24', status: 'Open', storage: 'Security office' }];
 const categories = ['All', 'ID Card', 'Wallet', 'Phone', 'Laptop', 'Books', 'Electronics', 'Other'];

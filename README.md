@@ -17,6 +17,7 @@ CampusConnect brings the daily college experience into one focused workspace. St
 
 - Supplied CampusConnect open-book logo with responsive branding
 - Role-aware navigation and protected workspace routes
+- Complete student navigation stays visible across Dashboard, Academics, Profile, Campus Services, Lost & Found, and Placement Opportunities
 - Supabase Auth with server-side role resolution and middleware session refresh
 - Student academic record with marks, attendance, SGPA/CGPA, charts, and print-to-PDF reporting
 - Faculty attendance editing with bulk actions, date selection, warnings, and CSV export

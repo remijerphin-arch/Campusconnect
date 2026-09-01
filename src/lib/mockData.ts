@@ -202,13 +202,6 @@ export const MOCK_COMMUNITY_BOARD: CommunityBoardItem[] = [
 
 export const DEMO_CREDENTIALS = [
   {
-    label: 'Student',
-    roleKey: 'student' as const,
-    name: 'Arjun Sharma',
-    email: 'student@campusconnect.edu',
-    password: 'student123',
-  },
-  {
     label: 'Faculty',
     roleKey: 'faculty' as const,
     name: 'Dr. Meera Nair',
@@ -230,3 +223,5 @@ export const DEMO_CREDENTIALS = [
     password: 'admin123',
   },
 ];
+
+export type DemoCredential = (typeof DEMO_CREDENTIALS)[number];

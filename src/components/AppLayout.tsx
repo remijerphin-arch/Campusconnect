@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
+import PageTransition from '@/components/PageTransition';
+import { isRoleAccessEnabled } from '@/lib/adminAccess';
+import { readAdminSettings } from '@/lib/demoStore';
+import type { UserRole } from '@/types';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -10,21 +14,28 @@ interface AppLayoutProps {
 }
 
 const rolePaths = {
-  student: ['/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/lost-found'],
-  faculty: ['/faculty-dashboard', '/lost-found'],
+  student: ['/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/lost-found', '/canteen'],
+  faculty: ['/faculty-dashboard', '/lost-found', '/canteen'],
   placement_admin: ['/placement-admin'],
-  campus_admin: ['/campus-admin', '/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/faculty-dashboard', '/placement-admin', '/lost-found'],
+  campus_admin: ['/campus-admin', '/campus-admin/canteen', '/student-dashboard', '/student-profile', '/academics', '/student-services', '/placement-opportunities', '/lost-found', '/faculty-dashboard', '/placement-admin', '/canteen'],
 } as const;
 
 export default function AppLayout({ children, currentPath }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [accessChecked, setAccessChecked] = useState(false);
 
   useEffect(() => {
-    const role = window.localStorage.getItem('campusconnect-demo-role') as keyof typeof rolePaths | null;
-    if (!role || !rolePaths[role].includes(currentPath as never)) {
+    const role = window.localStorage.getItem('campusconnect-demo-role') as UserRole | null;
+    const settings = readAdminSettings();
+
+    if (settings?.maintenanceMode && role !== 'campus_admin') {
       window.location.href = '/';
+      return;
+    }
+
+    if (!role || !rolePaths[role].includes(currentPath as never) || !isRoleAccessEnabled(role, settings)) {
+      window.location.href = role && !isRoleAccessEnabled(role, settings) ? '/forbidden' : '/';
       return;
     }
     setAccessChecked(true);
@@ -37,17 +48,17 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
       <Sidebar
         collapsed={sidebarCollapsed}
         currentPath={currentPath}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
+        mobileOpen={sidebarOpen}
+        onMobileClose={() => setSidebarOpen(false)}
       />
-      <div className={sidebarCollapsed ? 'lg:pl-24' : 'lg:pl-72'}>
+      <div className={sidebarOpen ? (sidebarCollapsed ? 'lg:pl-24' : 'lg:pl-72') : ''}>
         <Topbar
           currentPath={currentPath}
-          onMenuClick={() => setMobileOpen(true)}
+          onMenuClick={() => setSidebarOpen(true)}
           onCollapseToggle={() => setSidebarCollapsed((value) => !value)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8">{children}</main>
+        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8"><PageTransition>{children}</PageTransition></main>
       </div>
     </div>
   );
