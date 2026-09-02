@@ -44,7 +44,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
   if (!accessChecked) return null;
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="app-shell min-h-screen bg-transparent">
       <Sidebar
         collapsed={sidebarCollapsed}
         currentPath={currentPath}
@@ -58,7 +58,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
           onCollapseToggle={() => setSidebarCollapsed((value) => !value)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8"><PageTransition>{children}</PageTransition></main>
+        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8"><PageTransition key={currentPath}>{children}</PageTransition></main>
       </div>
     </div>
   );

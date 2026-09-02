@@ -43,6 +43,17 @@ const roleIcons = {
   campus_admin: Shield,
 };
 
+const staffAutofillRoles: Array<{
+  role: Extract<UserRole, 'faculty' | 'placement_admin' | 'campus_admin'>;
+  label: string;
+  panelClass: string;
+  iconClass: string;
+}> = [
+  { role: 'faculty', label: 'Faculty', panelClass: 'border-blue-500/30 hover:border-blue-500/60', iconClass: 'bg-blue-500/15 text-blue-600' },
+  { role: 'placement_admin', label: 'Placement', panelClass: 'border-purple-500/30 hover:border-purple-500/60', iconClass: 'bg-purple-500/15 text-purple-600' },
+  { role: 'campus_admin', label: 'Admin', panelClass: 'border-red-500/30 hover:border-red-500/60', iconClass: 'bg-red-500/15 text-red-600' },
+];
+
 export default function LoginPageClient() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<UserRole>('student');
@@ -51,6 +62,7 @@ export default function LoginPageClient() {
   const [authenticatedUser, setAuthenticatedUser] = useState<{ name: string; profileImage?: string } | null>(null);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [studentSearch, setStudentSearch] = useState('');
+  const [recentlyAutofilledRole, setRecentlyAutofilledRole] = useState<UserRole | null>(null);
   const {
     register,
     handleSubmit,
@@ -98,6 +110,16 @@ export default function LoginPageClient() {
                 : '/campus-admin'
       );
     }, 2050);
+  };
+
+  const applyDemoCredential = (role: UserRole, email: string, password: string) => {
+    setSelectedRole(role);
+    setValue('email', email);
+    setValue('password', password);
+    setRecentlyAutofilledRole(role);
+    window.setTimeout(() => {
+      setRecentlyAutofilledRole((currentRole) => (currentRole === role ? null : currentRole));
+    }, 1200);
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -233,8 +255,8 @@ export default function LoginPageClient() {
 
       <section className="flex items-center px-6 py-10 sm:px-10">
         <div className="login-form-enter mx-auto w-full max-w-xl rounded-[2rem] border bg-card p-8 shadow-card">
-          <h3 className="text-2xl font-bold">Sign in</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <h3 className="login-form-title text-2xl font-bold">Sign in</h3>
+          <p className="login-form-copy mt-2 text-sm text-muted-foreground">
             Select your role and use a demo account to preview the platform.
           </p>
           {maintenanceMode && <div className="mt-4 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">CampusConnect is under maintenance. Campus Admin access remains available.</div>}
@@ -248,8 +270,10 @@ export default function LoginPageClient() {
                   key={role}
                   type="button"
                   onClick={() => setSelectedRole(role)}
-                    className={`login-role-card rounded-[1.25rem] border p-4 text-left transition ${
-                    active ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10' : 'hover:-translate-y-1 hover:bg-muted'
+                  aria-pressed={active}
+                  style={{ animationDelay: `${180 + (Object.keys(roleDescriptions) as UserRole[]).indexOf(role) * 70}ms` }}
+                  className={`login-role-card rounded-[1.25rem] border p-4 text-left ${
+                    active ? 'login-role-card-active border-primary bg-primary/10 shadow-lg shadow-primary/10' : 'hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center gap-2 font-semibold">
@@ -262,12 +286,48 @@ export default function LoginPageClient() {
             })}
           </div>
 
+          <div className="login-quick-autofill mt-5 rounded-[1.5rem] border bg-muted/40 p-4">
+            <div className="flex items-center gap-2">
+              <LockKeyhole size={16} className="text-primary" />
+              <div>
+                <p className="text-sm font-bold">Quick demo autofill</p>
+                <p className="text-xs text-muted-foreground">Choose an account to fill in its login details.</p>
+              </div>
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {staffAutofillRoles.map(({ role, label, panelClass, iconClass }) => {
+                const credential = DEMO_CREDENTIALS.find((item) => item.roleKey === role);
+                const Icon = roleIcons[role];
+
+                if (!credential) return null;
+
+                return (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => applyDemoCredential(role, credential.email, credential.password)}
+                    aria-label={`Autofill ${label} demo login`}
+                    className={`login-quick-autofill-card flex items-center gap-3 rounded-xl border bg-card px-3 py-3 text-left ${recentlyAutofilledRole === role ? 'login-quick-autofill-card-selected' : ''} ${panelClass}`}
+                  >
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconClass}`}>
+                      <Icon size={16} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold">{label}</span>
+                      <span className="block truncate text-xs text-muted-foreground">Autofill login</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium">Email</label>
               <input
                 {...register('email', { required: 'Email is required' })}
-                className="w-full rounded-2xl border bg-background px-4 py-3 outline-none ring-0"
+                className={`login-input w-full rounded-2xl border bg-background px-4 py-3 outline-none ring-0 ${recentlyAutofilledRole ? 'login-input-autofilled' : ''}`}
                 placeholder="student@campusconnect.edu"
               />
               <p className="mt-1 text-xs text-danger">{errors.email?.message}</p>
@@ -277,7 +337,7 @@ export default function LoginPageClient() {
               <input
                 type="password"
                 {...register('password', { required: 'Password is required' })}
-                className="w-full rounded-2xl border bg-background px-4 py-3 outline-none ring-0"
+                className={`login-input w-full rounded-2xl border bg-background px-4 py-3 outline-none ring-0 ${recentlyAutofilledRole ? 'login-input-autofilled' : ''}`}
                 placeholder="••••••••"
               />
               <p className="mt-1 text-xs text-danger">{errors.password?.message}</p>
@@ -291,6 +351,9 @@ export default function LoginPageClient() {
               {isLoading ? 'Signing in...' : 'Enter CampusConnect'}
               <ChevronRight size={18} />
             </button>
+            <p className={`login-autofill-feedback ${recentlyAutofilledRole ? 'login-autofill-feedback-visible' : ''}`} aria-live="polite">
+              {recentlyAutofilledRole ? `${recentlyAutofilledRole === 'campus_admin' ? 'Admin' : recentlyAutofilledRole === 'placement_admin' ? 'Placement' : 'Faculty'} demo login is ready.` : '\u00a0'}
+            </p>
           </form>
 
           {/* STUDENT AUTOFILL SECTION */}
@@ -319,9 +382,7 @@ export default function LoginPageClient() {
                        key={student.email}
                        type="button"
                        onClick={() => {
-                         setSelectedRole('student');
-                         setValue('email', student.email);
-                         setValue('password', student.password);
+                         applyDemoCredential('student', student.email, student.password);
                          setStudentSearch(student.fullName);
                        }}
                        className="animate-in fade-in slide-in-from-left-2 group flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/60 px-3 py-2 text-left transition-all duration-200 hover:border-primary/50 hover:bg-card hover:shadow-md hover:shadow-primary/10"
@@ -341,7 +402,7 @@ export default function LoginPageClient() {
                    ))
                  ) : (
                    <div className="animate-in fade-in rounded-xl border border-dashed border-primary/20 bg-card/30 px-4 py-6 text-center">
-                     <p className="text-sm text-muted-foreground">No students found matching "{studentSearch}"</p>
+                     <p className="text-sm text-muted-foreground">No students found matching &quot;{studentSearch}&quot;</p>
                    </div>
                  )}
                </div>
@@ -365,11 +426,7 @@ export default function LoginPageClient() {
                  <button
                    key={credential.email}
                    type="button"
-                   onClick={() => {
-                     setSelectedRole('faculty');
-                     setValue('email', credential.email);
-                     setValue('password', credential.password);
-                   }}
+                   onClick={() => applyDemoCredential('faculty', credential.email, credential.password)}
                    className="animate-in fade-in slide-in-from-left-2 group flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-left transition-all duration-200 hover:border-blue-500/50 hover:bg-card hover:shadow-md hover:shadow-blue-500/10 hover:-translate-y-1"
                    style={{
                      animationDelay: `${idx * 50}ms`,
@@ -406,11 +463,7 @@ export default function LoginPageClient() {
                  <button
                    key={credential.email}
                    type="button"
-                   onClick={() => {
-                     setSelectedRole('placement_admin');
-                     setValue('email', credential.email);
-                     setValue('password', credential.password);
-                   }}
+                   onClick={() => applyDemoCredential('placement_admin', credential.email, credential.password)}
                    className="animate-in fade-in slide-in-from-left-2 group flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-left transition-all duration-200 hover:border-purple-500/50 hover:bg-card hover:shadow-md hover:shadow-purple-500/10 hover:-translate-y-1"
                    style={{
                      animationDelay: `${idx * 50}ms`,
@@ -447,11 +500,7 @@ export default function LoginPageClient() {
                  <button
                    key={credential.email}
                    type="button"
-                   onClick={() => {
-                     setSelectedRole('campus_admin');
-                     setValue('email', credential.email);
-                     setValue('password', credential.password);
-                   }}
+                   onClick={() => applyDemoCredential('campus_admin', credential.email, credential.password)}
                    className="animate-in fade-in slide-in-from-left-2 group flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/60 px-4 py-3 text-left transition-all duration-200 hover:border-red-500/50 hover:bg-card hover:shadow-md hover:shadow-red-500/10 hover:-translate-y-1"
                    style={{
                      animationDelay: `${idx * 50}ms`,

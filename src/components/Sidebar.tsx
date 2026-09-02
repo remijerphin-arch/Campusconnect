@@ -176,11 +176,11 @@ export default function Sidebar({
   return (
     <>
       <div
-        className={`fixed inset-0 z-30 bg-slate-950/40 backdrop-blur-sm lg:hidden ${mobileOpen ? 'block' : 'hidden'}`}
+        className={`app-sidebar-backdrop fixed inset-0 z-30 bg-slate-950/40 backdrop-blur-sm lg:hidden ${mobileOpen ? 'block' : 'hidden'}`}
         onClick={onMobileClose}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r bg-card/95 backdrop-blur transition-transform duration-200 ${collapsed ? 'lg:w-24' : ''} ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`app-sidebar fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r bg-card/95 backdrop-blur transition-transform duration-200 ${collapsed ? 'lg:w-24' : ''} ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between border-b px-5 py-5">
           <div className="flex items-center gap-3">
@@ -224,7 +224,8 @@ export default function Sidebar({
                   key={item.href}
                   href={item.href}
                   title={collapsed ? item.label : undefined}
-                  className={`group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 ${active ? 'bg-primary text-primary-foreground shadow-card' : 'text-muted-foreground hover:bg-muted hover:text-foreground'} ${collapsed ? 'justify-center px-2' : ''}`}
+                  aria-current={active ? 'page' : undefined}
+                  className={`app-sidebar-link group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 ${active ? 'bg-primary text-primary-foreground shadow-card' : 'text-muted-foreground hover:bg-muted hover:text-foreground'} ${collapsed ? 'justify-center px-2' : ''}`}
                 >
                   <Icon size={18} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                   {!collapsed && <span>{item.label}</span>}

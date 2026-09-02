@@ -118,7 +118,7 @@ export default function Topbar({
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-20 border-b bg-background/80 backdrop-blur">
+    <header className="app-topbar fixed inset-x-0 top-0 z-20 border-b bg-background/80 backdrop-blur">
       <div className="flex h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <BackButton />
@@ -145,7 +145,7 @@ export default function Topbar({
                 {unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-danger-foreground">{unreadCount}</span>}
               </button>
               {notificationsOpen && (
-                <div className="absolute right-0 top-12 z-50 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border bg-card p-4 shadow-card">
+                <div className="app-popover absolute right-0 top-12 z-50 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border bg-card p-4 shadow-card">
                   <div className="flex items-center justify-between"><p className="font-semibold">Notifications</p><button type="button" onClick={markAllRead} className="text-xs font-semibold text-primary">Mark all read</button></div>
                   <div className="mt-3 max-h-[min(28rem,calc(100vh-8rem))] space-y-2 overflow-y-auto">
                     {[...relevantUpdates.map((item) => ({ id: item.id, title: item.title, body: item.body, update: true, unread: !readUpdateIds.includes(item.id) })), ...notificationFeed.map((item) => ({ id: item.id, title: item.title, body: item.body, update: false, unread: item.unread }))].map((item) => (
@@ -178,7 +178,7 @@ export default function Topbar({
       </div>
       {updatesPopupOpen && unreadUpdates.length > 0 && (
         <div className="fixed right-4 top-24 z-50 w-[min(28rem,calc(100vw-2rem))] max-w-full">
-          <section className="max-h-[calc(100vh-6rem)] overflow-y-auto rounded-[2rem] border bg-card p-5 shadow-[0_25px_80px_-35px_rgba(15,23,42,0.65)] sm:p-6">
+          <section className="app-popover max-h-[calc(100vh-6rem)] overflow-y-auto rounded-[2rem] border bg-card p-5 shadow-[0_25px_80px_-35px_rgba(15,23,42,0.65)] sm:p-6">
             <div className="flex items-start gap-4">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">CampusConnect updates</p>
@@ -200,7 +200,7 @@ export default function Topbar({
           </section>
         </div>
       )}
-      {searchOpen && <div className="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-[2px]" onClick={() => setSearchOpen(false)}><div className="absolute left-4 top-20 z-50 w-[min(32rem,calc(100vw-2rem))] rounded-2xl border bg-card p-4 shadow-2xl sm:left-1/2 sm:-translate-x-1/2"><div className="flex items-center gap-2 rounded-xl border px-3 py-2"><Search size={16} className="text-muted-foreground" /><input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search drives, subjects, updates" className="w-full bg-transparent text-sm outline-none" /></div><p className="mt-2 text-xs text-muted-foreground">Press Esc to close</p><div className="mt-3 space-y-2 text-sm">{[['/placement-opportunities', 'Placement opportunities', 'drives companies jobs'], ['/academics', 'Academic subjects and marks', 'subjects marks results'], ['/student-services', 'Campus services and updates', 'attendance timetable assignments events'], ['/lost-found', 'Lost & Found', 'lost found items claims']].filter(([, label, terms]) => !searchQuery || `${label} ${terms}`.toLowerCase().includes(searchQuery.toLowerCase())).map(([href, label]) => <Link key={href} href={href} onClick={() => setSearchOpen(false)} className="block rounded-xl p-3 hover:bg-muted">{label}</Link>)}{searchQuery && !['placement opportunities drives companies jobs', 'academic subjects and marks subjects marks results', 'campus services and updates attendance timetable assignments events', 'lost found lost found items claims'].some((terms) => terms.includes(searchQuery.toLowerCase())) && <p className="p-3 text-sm text-muted-foreground">No authorized results found.</p>}</div></div></div>}
+      {searchOpen && <div className="app-overlay fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-[2px]" onClick={() => setSearchOpen(false)}><div className="app-search-dialog absolute left-4 top-20 z-50 w-[min(32rem,calc(100vw-2rem))] rounded-2xl border bg-card p-4 shadow-2xl sm:left-1/2 sm:-translate-x-1/2"><div className="flex items-center gap-2 rounded-xl border px-3 py-2"><Search size={16} className="text-muted-foreground" /><input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search drives, subjects, updates" className="w-full bg-transparent text-sm outline-none" /></div><p className="mt-2 text-xs text-muted-foreground">Press Esc to close</p><div className="mt-3 space-y-2 text-sm">{[['/placement-opportunities', 'Placement opportunities', 'drives companies jobs'], ['/academics', 'Academic subjects and marks', 'subjects marks results'], ['/student-services', 'Campus services and updates', 'attendance timetable assignments events'], ['/lost-found', 'Lost & Found', 'lost found items claims']].filter(([, label, terms]) => !searchQuery || `${label} ${terms}`.toLowerCase().includes(searchQuery.toLowerCase())).map(([href, label]) => <Link key={href} href={href} onClick={() => setSearchOpen(false)} className="block rounded-xl p-3 hover:bg-muted">{label}</Link>)}{searchQuery && !['placement opportunities drives companies jobs', 'academic subjects and marks subjects marks results', 'campus services and updates attendance timetable assignments events', 'lost found lost found items claims'].some((terms) => terms.includes(searchQuery.toLowerCase())) && <p className="p-3 text-sm text-muted-foreground">No authorized results found.</p>}</div></div></div>}
     </header>
   );
 }
