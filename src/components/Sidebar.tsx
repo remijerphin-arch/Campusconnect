@@ -223,6 +223,7 @@ export default function Sidebar({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onMobileClose}
                   title={collapsed ? item.label : undefined}
                   aria-current={active ? 'page' : undefined}
                   className={`app-sidebar-link group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 ${active ? 'bg-primary text-primary-foreground shadow-card' : 'text-muted-foreground hover:bg-muted hover:text-foreground'} ${collapsed ? 'justify-center px-2' : ''}`}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Check,
   ClipboardList,
@@ -10,7 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { publishCampusUpdate } from '@/lib/demoStore';
+import { publishCampusUpdate, readLeaveRequests, updateLeaveRequest } from '@/lib/demoStore';
 
 const initialLeaves = [
   {
@@ -30,16 +30,34 @@ const initialLeaves = [
 ];
 
 export default function FacultyOperationsPanel() {
-  const [leaves, setLeaves] = useState(initialLeaves);
+  const [leaves, setLeaves] = useState<Array<{ id: string; name: string; dates: string; reason: string; status: string; studentEmail?: string }>>(initialLeaves);
   const [assignmentOpen, setAssignmentOpen] = useState(false);
   const [assignmentTitle, setAssignmentTitle] = useState('');
+
+  useEffect(() => {
+    const syncLeaves = () => setLeaves([
+      ...initialLeaves,
+      ...readLeaveRequests().map((request) => ({
+        id: request.id,
+        name: request.studentName,
+        dates: `${request.fromDate} to ${request.toDate}`,
+        reason: request.reason,
+        status: request.status,
+        studentEmail: request.studentEmail,
+      })),
+    ]);
+    syncLeaves();
+    window.addEventListener('campusconnect-data-updated', syncLeaves);
+    return () => window.removeEventListener('campusconnect-data-updated', syncLeaves);
+  }, []);
 
   const updateLeave = (id: string, status: 'Approved' | 'Rejected') => {
     const leave = leaves.find((item) => item.id === id);
     setLeaves((current) =>
       current.map((leave) => (leave.id === id ? { ...leave, status } : leave)),
     );
-    publishCampusUpdate({ title: `Leave request ${status.toLowerCase()}`, body: `Your leave request for ${leave?.dates ?? 'the selected dates'} was ${status.toLowerCase()} by faculty.`, roles: ['student'] });
+    if (leave?.studentEmail) updateLeaveRequest(id, status);
+    publishCampusUpdate({ title: `Leave request ${status.toLowerCase()}`, body: `Your leave request for ${leave?.dates ?? 'the selected dates'} was ${status.toLowerCase()} by faculty.`, roles: ['student'], targetEmail: leave?.studentEmail });
     toast.success(`Leave request ${status.toLowerCase()}`);
   };
 

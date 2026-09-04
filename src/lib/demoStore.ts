@@ -14,6 +14,11 @@ const IMPORTED_USERS_KEY = 'campusconnect-imported-users';
 const PROFILE_IMAGES_KEY = 'campusconnect-profile-images';
 const CAMPUS_UPDATES_KEY = 'campusconnect-campus-updates';
 const CAMPUS_UPDATE_READ_KEY = 'campusconnect-campus-updates-read';
+const LEAVE_REQUESTS_KEY = 'campusconnect-leave-requests';
+const SUPPORT_TICKETS_KEY = 'campusconnect-support-tickets';
+const CANTEEN_ORDERS_KEY = 'campusconnect-canteen-orders';
+const EMERGENCY_CHECK_INS_KEY = 'campusconnect-emergency-check-ins';
+const CAREER_PROGRESS_KEY = 'campusconnect-career-progress';
 
 export interface AdminSettings {
   services: {
@@ -160,6 +165,94 @@ export function markCampusUpdatesRead(key: string, ids: string[]) {
   const states = value ? JSON.parse(value) as Record<string, string[]> : {};
   states[key] = [...new Set(ids)];
   window.localStorage.setItem(CAMPUS_UPDATE_READ_KEY, JSON.stringify(states));
+}
+
+export interface LeaveRequest {
+  id: string;
+  studentName: string;
+  studentEmail: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  createdAt: string;
+}
+
+export interface SupportTicket {
+  id: string;
+  studentEmail: string;
+  category: string;
+  detail: string;
+  status: 'Open' | 'In Progress' | 'Resolved';
+  createdAt: string;
+}
+
+export interface CanteenOrder {
+  id: string;
+  studentEmail: string;
+  itemName: string;
+  amount: number;
+  pickupTime: string;
+  status: 'Placed' | 'Ready' | 'Collected';
+  createdAt: string;
+}
+
+export interface EmergencyCheckIn {
+  id: string;
+  studentEmail: string;
+  studentName: string;
+  status: 'Safe' | 'Need assistance';
+  note?: string;
+  createdAt: string;
+}
+
+export interface CareerProgress {
+  resumeReady: boolean;
+  mockInterviews: number;
+  aptitudeSessions: number;
+  skills: string[];
+}
+
+function readStoredList<T>(key: string): T[] {
+  if (typeof window === 'undefined') return [];
+  const value = window.localStorage.getItem(key);
+  return value ? JSON.parse(value) as T[] : [];
+}
+
+function saveStoredList<T>(key: string, value: T[]) {
+  window.localStorage.setItem(key, JSON.stringify(value));
+  window.dispatchEvent(new Event('campusconnect-data-updated'));
+}
+
+export function readLeaveRequests() { return readStoredList<LeaveRequest>(LEAVE_REQUESTS_KEY); }
+export function createLeaveRequest(request: Omit<LeaveRequest, 'id' | 'status' | 'createdAt'>) {
+  saveStoredList(LEAVE_REQUESTS_KEY, [{ ...request, id: `leave-${Date.now()}`, status: 'Pending', createdAt: new Date().toISOString() }, ...readLeaveRequests()]);
+}
+export function updateLeaveRequest(id: string, status: LeaveRequest['status']) {
+  saveStoredList(LEAVE_REQUESTS_KEY, readLeaveRequests().map((request) => request.id === id ? { ...request, status } : request));
+}
+export function readSupportTickets() { return readStoredList<SupportTicket>(SUPPORT_TICKETS_KEY); }
+export function createSupportTicket(ticket: Omit<SupportTicket, 'id' | 'status' | 'createdAt'>) {
+  saveStoredList(SUPPORT_TICKETS_KEY, [{ ...ticket, id: `CC-${Date.now().toString().slice(-5)}`, status: 'Open', createdAt: new Date().toISOString() }, ...readSupportTickets()]);
+}
+export function readCanteenOrders() { return readStoredList<CanteenOrder>(CANTEEN_ORDERS_KEY); }
+export function createCanteenOrder(order: Omit<CanteenOrder, 'id' | 'status' | 'createdAt'>) {
+  saveStoredList(CANTEEN_ORDERS_KEY, [{ ...order, id: `order-${Date.now()}`, status: 'Placed', createdAt: new Date().toISOString() }, ...readCanteenOrders()]);
+}
+export function readEmergencyCheckIns() { return readStoredList<EmergencyCheckIn>(EMERGENCY_CHECK_INS_KEY); }
+export function saveEmergencyCheckIn(checkIn: Omit<EmergencyCheckIn, 'id' | 'createdAt'>) {
+  saveStoredList(EMERGENCY_CHECK_INS_KEY, [{ ...checkIn, id: `safe-${Date.now()}`, createdAt: new Date().toISOString() }, ...readEmergencyCheckIns().filter((item) => item.studentEmail !== checkIn.studentEmail)]);
+}
+export function readCareerProgress(email: string): CareerProgress {
+  if (typeof window === 'undefined') return { resumeReady: false, mockInterviews: 0, aptitudeSessions: 0, skills: [] };
+  const allProgress = JSON.parse(window.localStorage.getItem(CAREER_PROGRESS_KEY) ?? '{}') as Record<string, CareerProgress>;
+  return allProgress[email.toLowerCase()] ?? { resumeReady: false, mockInterviews: 0, aptitudeSessions: 0, skills: [] };
+}
+export function saveCareerProgress(email: string, progress: CareerProgress) {
+  const allProgress = JSON.parse(window.localStorage.getItem(CAREER_PROGRESS_KEY) ?? '{}') as Record<string, CareerProgress>;
+  allProgress[email.toLowerCase()] = progress;
+  window.localStorage.setItem(CAREER_PROGRESS_KEY, JSON.stringify(allProgress));
+  window.dispatchEvent(new Event('campusconnect-data-updated'));
 }
 
 export function readAllDemoUsers(): ImportedUser[] {

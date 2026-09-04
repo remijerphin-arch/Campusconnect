@@ -23,7 +23,9 @@ import {
 } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { toast } from 'sonner';
-import { readCampusUpdates } from '@/lib/demoStore';
+import { createLeaveRequest, readCampusUpdates, readLeaveRequests } from '@/lib/demoStore';
+import { getDemoStudentByEmail } from '@/lib/studentDemoData';
+import CampusHub from '@/app/student-services/components/CampusHub';
 
 type Tab =
   | 'attendance'
@@ -38,7 +40,8 @@ type Tab =
   | 'lost-found'
   | 'events'
   | 'exchange'
-  | 'helpdesk';
+  | 'helpdesk'
+  | 'hub';
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'attendance', label: 'Attendance' },
@@ -53,6 +56,7 @@ const tabs: { id: Tab; label: string }[] = [
   { id: 'events', label: 'Events & clubs' },
   { id: 'exchange', label: 'Exchange' },
   { id: 'helpdesk', label: 'Help & complaint' },
+  { id: 'hub', label: 'Campus Hub' },
 ];
 
 const attendance = [
@@ -203,10 +207,16 @@ export default function StudentServicesPage() {
   const [newPost, setNewPost] = useState('');
   const [claiming, setClaiming] = useState<string | null>(null);
   const [leaveReason, setLeaveReason] = useState('');
+  const [leaveFromDate, setLeaveFromDate] = useState('');
+  const [leaveToDate, setLeaveToDate] = useState('');
   const [ticket, setTicket] = useState('');
   const [leaveUpdates, setLeaveUpdates] = useState(() => readCampusUpdates().filter((update) => update.title.startsWith('Leave request')));
+  const [leaveRequests, setLeaveRequests] = useState(() => readLeaveRequests());
   useEffect(() => {
-    const refresh = () => setLeaveUpdates(readCampusUpdates().filter((update) => update.title.startsWith('Leave request')));
+    const refresh = () => {
+      setLeaveUpdates(readCampusUpdates().filter((update) => update.title.startsWith('Leave request')));
+      setLeaveRequests(readLeaveRequests());
+    };
     window.addEventListener('campusconnect-data-updated', refresh);
     return () => window.removeEventListener('campusconnect-data-updated', refresh);
   }, []);
@@ -603,8 +613,19 @@ export default function StudentServicesPage() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
+            const email = window.localStorage.getItem('campusconnect-demo-email') ?? '';
+            const student = getDemoStudentByEmail(email);
+            createLeaveRequest({
+              studentName: student?.name ?? email.split('@')[0] ?? 'Student',
+              studentEmail: email,
+              fromDate: leaveFromDate,
+              toDate: leaveToDate,
+              reason: leaveReason.trim(),
+            });
             save('Leave request submitted');
             setLeaveReason('');
+            setLeaveFromDate('');
+            setLeaveToDate('');
           }}
           className="mt-6 grid gap-4 md:grid-cols-2"
         >
@@ -613,6 +634,8 @@ export default function StudentServicesPage() {
             <input
               required
               type="date"
+              value={leaveFromDate}
+              onChange={(event) => setLeaveFromDate(event.target.value)}
               className="mt-1 w-full rounded-xl border bg-background px-3 py-2"
             />
           </label>
@@ -621,6 +644,8 @@ export default function StudentServicesPage() {
             <input
               required
               type="date"
+              value={leaveToDate}
+              onChange={(event) => setLeaveToDate(event.target.value)}
               className="mt-1 w-full rounded-xl border bg-background px-3 py-2"
             />
           </label>
@@ -646,12 +671,13 @@ export default function StudentServicesPage() {
         </form>
         <div className="mt-8 border-t pt-5">
           <h3 className="font-semibold">Request history</h3>
-          <div className="mt-3 flex items-center justify-between rounded-xl border p-3 text-sm">
-            <span>August 20 - August 22 · Personal leave</span>
-            <span className="rounded-full bg-warning/10 px-3 py-1 font-semibold text-warning">
-              Pending
-            </span>
-          </div>
+          {leaveRequests.filter((request) => typeof window !== 'undefined' && request.studentEmail === window.localStorage.getItem('campusconnect-demo-email')).map((request) => (
+            <div key={request.id} className="mt-3 flex items-center justify-between gap-3 rounded-xl border p-3 text-sm">
+              <span>{request.fromDate} to {request.toDate} · {request.reason}</span>
+              <span className={`rounded-full px-3 py-1 font-semibold ${request.status === 'Approved' ? 'bg-success/10 text-success' : request.status === 'Rejected' ? 'bg-danger/10 text-danger' : 'bg-warning/10 text-warning'}`}>{request.status}</span>
+            </div>
+          ))}
+          {!leaveRequests.some((request) => typeof window !== 'undefined' && request.studentEmail === window.localStorage.getItem('campusconnect-demo-email')) && <p className="mt-3 rounded-xl border border-dashed p-3 text-sm text-muted-foreground">No leave requests submitted yet.</p>}
           {leaveUpdates.map((update) => (
             <div key={update.id} className="mt-3 rounded-xl border border-success/30 bg-success/10 p-3 text-sm">
               <p className="font-semibold text-success">{update.title}</p>
@@ -937,6 +963,7 @@ export default function StudentServicesPage() {
         </div>
       </Panel>
     ),
+    hub: <CampusHub />,
   }[active];
 
   return (
