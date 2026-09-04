@@ -4,9 +4,10 @@ import Image from 'next/image';
 
 interface AppLogoProps {
   size?: number;
+  priority?: boolean;
 }
 
-export default function AppLogo({ size = 32 }: AppLogoProps) {
+export default function AppLogo({ size = 32, priority = true }: AppLogoProps) {
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <Image
@@ -15,7 +16,7 @@ export default function AppLogo({ size = 32 }: AppLogoProps) {
         fill
         sizes={`${size}px`}
         className="object-contain"
-        priority
+        priority={priority}
       />
     </div>
   );
