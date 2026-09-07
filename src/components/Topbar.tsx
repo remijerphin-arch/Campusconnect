@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Bell, Check, LogOut, Menu, PanelLeft, Search } from 'lucide-react';
+import { Bell, Check, LogOut, Menu, PanelLeft, Search, UserRound } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import BackButton from '@/components/BackButton';
 import { markCampusUpdatesRead, readCampusUpdateReadIds, readCampusUpdates, type CampusUpdate } from '@/lib/demoStore';
@@ -33,24 +33,27 @@ export default function Topbar({
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [currentEmail, setCurrentEmail] = useState('');
   const [studentNotifications, setStudentNotifications] = useState<Array<{ id: string; title: string; body: string; unread: boolean }>>([]);
+  const [studentInitials, setStudentInitials] = useState('');
   const notificationKey = currentRole ?? 'guest';
 
   useEffect(() => {
     const role = window.localStorage.getItem('campusconnect-demo-role') as UserRole | null;
     const email = window.localStorage.getItem('campusconnect-demo-email') ?? '';
     setCurrentRole(role);
-    setCurrentEmail(email);
+      setCurrentEmail(email);
 
     if (role === 'student') {
-      const nextData = getActiveStudentPortalData(email);
+        const nextData = getActiveStudentPortalData(email);
+        setStudentInitials(nextData.student.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase());
       setStudentNotifications(nextData.notifications.map((item) => ({
         id: item.id,
         title: item.title,
         body: item.body,
         unread: Boolean(item.unread),
       })));
-    } else {
-      setStudentNotifications([]);
+      } else {
+        setStudentNotifications([]);
+        setStudentInitials('');
     }
 
     const loadUpdates = () => {
@@ -169,6 +172,11 @@ export default function Topbar({
                 </div>
               )}
             </div>
+          )}
+          {currentRole === 'student' && (
+            <Link href="/student-profile" aria-label="Open my profile" title="My profile" className="flex h-10 w-10 items-center justify-center rounded-full border bg-primary/10 text-xs font-bold text-primary transition hover:bg-primary hover:text-primary-foreground">
+              {studentInitials || <UserRound size={17} />}
+            </Link>
           )}
           <button type="button" onClick={handleLogout} title="Log out" className="inline-flex items-center gap-2 rounded-full border border-danger/20 bg-danger/5 px-3 py-2 text-sm font-medium text-danger transition hover:bg-danger hover:text-white">
             <LogOut size={16} />

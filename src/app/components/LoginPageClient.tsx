@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -9,7 +10,10 @@ import {
   Briefcase,
   Check,
   ChevronRight,
+  Eye,
+  EyeOff,
   GraduationCap,
+  HelpCircle,
   LockKeyhole,
   Shield,
   Users,
@@ -19,6 +23,7 @@ import { DEMO_CREDENTIALS } from '@/lib/mockData';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import type { UserRole } from '@/types';
 import AppLogo from '@/components/ui/AppLogo';
+import ThemeToggle from '@/components/ThemeToggle';
 import { readAdminSettings, readImportedUsers, readProfileImages } from '@/lib/demoStore';
 import { isRoleAccessEnabled } from '@/lib/adminAccess';
 import { AUTHORITATIVE_STUDENT_ROSTER, searchAuthoritativeStudents } from '@/lib/authoritative-student-roster';
@@ -63,6 +68,10 @@ export default function LoginPageClient() {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [studentSearch, setStudentSearch] = useState('');
   const [recentlyAutofilledRole, setRecentlyAutofilledRole] = useState<UserRole | null>(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [rememberRole, setRememberRole] = useState(false);
+  const [recentStudentEmails, setRecentStudentEmails] = useState<string[]>([]);
+  const studentSearchRef = useRef<HTMLInputElement>(null);
   const {
     register,
     handleSubmit,
@@ -89,8 +98,30 @@ export default function LoginPageClient() {
       router.push('/placement-admin');
       return;
     }
+    const rememberedRole = window.localStorage.getItem('campusconnect-last-role') as UserRole | null;
+    let rememberedStudents: string[] = [];
+    try {
+      const storedStudents = JSON.parse(window.localStorage.getItem('campusconnect-recent-students') ?? '[]');
+      rememberedStudents = Array.isArray(storedStudents) ? storedStudents.filter((email): email is string => typeof email === 'string') : [];
+    } catch {
+      rememberedStudents = [];
+    }
+    if (rememberedRole && Object.keys(roleDescriptions).includes(rememberedRole)) setSelectedRole(rememberedRole);
+    setRememberRole(Boolean(rememberedRole));
+    setRecentStudentEmails(rememberedStudents.filter((email) => AUTHORITATIVE_STUDENT_ROSTER.some((student) => student.email === email)).slice(0, 4));
     setMaintenanceMode(readAdminSettings()?.maintenanceMode ?? false);
   }, [router]);
+
+  useEffect(() => {
+    const handleLoginShortcut = (event: KeyboardEvent) => {
+      if (event.key === '/' && event.target instanceof HTMLElement && !['INPUT', 'TEXTAREA'].includes(event.target.tagName)) {
+        event.preventDefault();
+        studentSearchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleLoginShortcut);
+    return () => window.removeEventListener('keydown', handleLoginShortcut);
+  }, []);
 
   const completeLogin = (role: UserRole, message: string, name: string, email: string, profileImage?: string) => {
     window.localStorage.setItem('campusconnect-demo-role', role);
@@ -114,12 +145,26 @@ export default function LoginPageClient() {
 
   const applyDemoCredential = (role: UserRole, email: string, password: string) => {
     setSelectedRole(role);
+    if (rememberRole) window.localStorage.setItem('campusconnect-last-role', role);
     setValue('email', email);
     setValue('password', password);
     setRecentlyAutofilledRole(role);
     window.setTimeout(() => {
       setRecentlyAutofilledRole((currentRole) => (currentRole === role ? null : currentRole));
     }, 1200);
+  };
+
+  const selectRole = (role: UserRole) => {
+    setSelectedRole(role);
+    if (rememberRole) window.localStorage.setItem('campusconnect-last-role', role);
+  };
+
+  const applyStudentCredential = (email: string, password: string, name?: string) => {
+    applyDemoCredential('student', email, password);
+    const nextRecentStudents = [email, ...recentStudentEmails.filter((recentEmail) => recentEmail !== email)].slice(0, 4);
+    setRecentStudentEmails(nextRecentStudents);
+    window.localStorage.setItem('campusconnect-recent-students', JSON.stringify(nextRecentStudents));
+    if (name) setStudentSearch(name);
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -191,8 +236,8 @@ export default function LoginPageClient() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden lg:grid lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="relative overflow-hidden bg-slate-950 px-6 py-10 text-white sm:px-10 lg:px-14">
+    <div className="campus-login relative flex min-h-screen items-center justify-center overflow-hidden">
+      <section className="campus-login-showcase hidden">
         <div className="login-glow absolute -left-24 -top-24 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl" />
         <div className="login-glow login-glow-delay absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,146,60,0.35),transparent_28%),radial-gradient(circle_at_75%_25%,rgba(14,165,233,0.22),transparent_24%)]" />
@@ -200,8 +245,8 @@ export default function LoginPageClient() {
           <div className="login-enter flex items-center gap-3">
             <AppLogo size={42} />
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-orange-200">
-                Cloud Platform
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-rose-200">
+                Your digital campus
               </p>
               <h1 className="text-2xl font-bold">CampusConnect</h1>
             </div>
@@ -210,38 +255,43 @@ export default function LoginPageClient() {
           <div className="my-auto max-w-xl py-16">
             <span className="login-enter login-delay-1 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
               <Users size={14} />
-              Unified student ecosystem
+              Your campus life, in sync
             </span>
-            <h2 className="login-enter login-delay-2 mt-6 text-4xl font-bold leading-tight sm:text-5xl">
-              One place for academics, placement growth, lost-and-found, and peer exchange.
+            <h2 className="login-enter login-delay-2 mt-6 max-w-lg text-5xl font-bold leading-[0.98] tracking-[-0.06em] sm:text-6xl">
+              Academics, campus life.<br /><span className="text-rose-300">One connected place.</span>
             </h2>
-            <p className="login-enter login-delay-3 mt-5 max-w-lg text-base leading-7 text-white/72">
-              CampusConnect centralizes student services with cloud access, notifications,
-              role-based dashboards, and RFID attendance updates that sync directly into the
-              platform.
+            <p className="login-enter login-delay-3 mt-6 max-w-md text-base leading-7 text-white/70">
+              Keep up with classes, attendance, opportunities, and campus services from one space designed for your day.
             </p>
-            <div className="relative mt-10 hidden min-h-24 sm:block" aria-label="Campus platform preview">
+            <div className="campus-login-phone-stage relative mt-10 hidden min-h-64 sm:block" aria-label="Campus platform preview">
+              <div className="campus-login-phone-campus">
+                <span className="campus-login-phone-time">9:41 AM</span>
+                <p>Welcome back</p><strong>Campus life,<br />in sync.</strong>
+                <small>See what&apos;s happening today.</small>
+                <div className="campus-login-phone-banner"><b>75%</b><span>Attendance<br />on track</span></div>
+                <div className="campus-login-phone-icons"><i /><i /><i /><i /></div>
+              </div>
               <div className="login-preview-card login-preview-one">
-                <span>Attendance</span>
+                <span>Academic pulse</span>
                 <strong>84%</strong>
-                <small>Up 3.2% this month</small>
+                <small>Attendance this term</small>
               </div>
               <div className="login-preview-card login-preview-two">
-                <span>Placements</span>
-                <strong>12 new roles</strong>
-                <small>3 match your profile</small>
+                <span>Opportunity board</span>
+                <strong>12 roles</strong>
+                <small>3 tailored matches</small>
               </div>
               <div className="login-preview-card login-preview-three">
-                <span>RFID Sync</span>
-                <strong>Synced</strong>
-                <small>2 minutes ago</small>
+                <span>Campus feed</span>
+                <strong>Live</strong>
+                <small>New updates waiting</small>
               </div>
             </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="mt-10 grid gap-4 max-sm:hidden sm:grid-cols-3">
               {[
-                ['RFID Sync', 'Attendance flows automatically into the cloud'],
-                ['Placements', 'Discover and track opportunities in one view'],
-                ['Community', 'Recover items and exchange resources faster'],
+                ['Smart academics', 'Attendance and coursework, clearly organized'],
+                ['Career-ready', 'Discover and track your best-fit opportunities'],
+                ['Campus community', 'Updates, resources and student services'],
               ].map(([title, text]) => (
                 <div key={title} className="login-enter login-delay-4 rounded-[1.5rem] border border-white/15 bg-white/10 p-4 transition duration-300 hover:-translate-y-1 hover:bg-white/15">
                   <p className="font-semibold">{title}</p>
@@ -253,11 +303,19 @@ export default function LoginPageClient() {
         </div>
       </section>
 
-      <section className="flex items-center px-6 py-10 sm:px-10">
+      <section className="campus-login-panel relative flex min-h-screen w-full items-center justify-center px-6 py-10 sm:px-10">
+        <Link href="/" className="absolute left-6 top-6 z-20 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-primary sm:left-10">
+          <ChevronRight size={16} className="rotate-180" /> Back to CampusConnect
+        </Link>
+        <div className="absolute right-6 top-6 z-20">
+          <ThemeToggle />
+        </div>
         <div className="login-form-enter mx-auto w-full max-w-xl rounded-[2rem] border bg-card p-8 shadow-card">
-          <h3 className="login-form-title text-2xl font-bold">Sign in</h3>
+          <div className="mb-7 flex items-center justify-between lg:hidden"><AppLogo size={36} /><span className="text-xs font-bold uppercase tracking-[0.18em] text-primary">CampusConnect</span></div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">CampusConnect access</p>
+          <h3 className="login-form-title mt-2 text-3xl font-bold tracking-[-0.04em]">Welcome back to campus.</h3>
           <p className="login-form-copy mt-2 text-sm text-muted-foreground">
-            Select your role and use a demo account to preview the platform.
+            Sign in to manage your academics, campus services, and career journey.
           </p>
           {maintenanceMode && <div className="mt-4 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">CampusConnect is under maintenance. Campus Admin access remains available.</div>}
 
@@ -269,7 +327,7 @@ export default function LoginPageClient() {
                 <button
                   key={role}
                   type="button"
-                  onClick={() => setSelectedRole(role)}
+                  onClick={() => selectRole(role)}
                   aria-pressed={active}
                   style={{ animationDelay: `${180 + (Object.keys(roleDescriptions) as UserRole[]).indexOf(role) * 70}ms` }}
                   className={`login-role-card rounded-[1.25rem] border p-4 text-left ${
@@ -320,6 +378,20 @@ export default function LoginPageClient() {
                 );
               })}
             </div>
+            <label className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={rememberRole}
+                onChange={(event) => {
+                  const next = event.target.checked;
+                  setRememberRole(next);
+                  if (next) window.localStorage.setItem('campusconnect-last-role', selectedRole);
+                  else window.localStorage.removeItem('campusconnect-last-role');
+                }}
+                className="h-4 w-4 accent-primary"
+              />
+              Remember my role on this device
+            </label>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
@@ -333,13 +405,25 @@ export default function LoginPageClient() {
               <p className="mt-1 text-xs text-danger">{errors.email?.message}</p>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Password</label>
-              <input
-                type="password"
-                {...register('password', { required: 'Password is required' })}
-                className={`login-input w-full rounded-2xl border bg-background px-4 py-3 outline-none ring-0 ${recentlyAutofilledRole ? 'login-input-autofilled' : ''}`}
-                placeholder="••••••••"
-              />
+              <label className="mb-2 block text-sm font-medium" htmlFor="login-password">Password</label>
+              <div className="relative">
+                <input
+                  id="login-password"
+                  type={passwordVisible ? 'text' : 'password'}
+                  {...register('password', { required: 'Password is required' })}
+                  className={`login-input w-full rounded-2xl border bg-background px-4 py-3 pr-12 outline-none ring-0 ${recentlyAutofilledRole ? 'login-input-autofilled' : ''}`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setPasswordVisible((visible) => !visible)}
+                  title={passwordVisible ? 'Hide password' : 'Show password'}
+                  aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-muted-foreground transition hover:text-foreground"
+                >
+                  {passwordVisible ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
               <p className="mt-1 text-xs text-danger">{errors.password?.message}</p>
             </div>
             <button
@@ -352,8 +436,14 @@ export default function LoginPageClient() {
               <ChevronRight size={18} />
             </button>
             <p className={`login-autofill-feedback ${recentlyAutofilledRole ? 'login-autofill-feedback-visible' : ''}`} aria-live="polite">
-              {recentlyAutofilledRole ? `${recentlyAutofilledRole === 'campus_admin' ? 'Admin' : recentlyAutofilledRole === 'placement_admin' ? 'Placement' : 'Faculty'} demo login is ready.` : '\u00a0'}
+              {recentlyAutofilledRole ? `${recentlyAutofilledRole === 'student' ? 'Student' : recentlyAutofilledRole === 'campus_admin' ? 'Admin' : recentlyAutofilledRole === 'placement_admin' ? 'Placement' : 'Faculty'} demo login is ready.` : '\u00a0'}
             </p>
+            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <span>Demo environment · No real credentials required</span>
+              <a href="mailto:support@campusconnect.edu" className="inline-flex shrink-0 items-center gap-1 font-semibold text-primary hover:underline">
+                <HelpCircle size={14} /> Need help?
+              </a>
+            </div>
           </form>
 
           {/* STUDENT AUTOFILL SECTION */}
@@ -370,11 +460,36 @@ export default function LoginPageClient() {
              </div>
              <div className="mt-3 space-y-2">
                <input
+                 ref={studentSearchRef}
                  value={studentSearch}
                  onChange={(event) => setStudentSearch(event.target.value)}
-                 placeholder="🔍 Search by name, register #, or email"
+                 onKeyDown={(event) => {
+                   if (event.key !== 'Enter') return;
+                   event.preventDefault();
+                   const firstStudent = searchAuthoritativeStudents(studentSearch)[0];
+                   if (firstStudent) applyStudentCredential(firstStudent.email, firstStudent.password, firstStudent.fullName);
+                 }}
+                 placeholder="Search by name, register #, or email (press / to focus)"
                  className="w-full rounded-xl border border-primary/20 bg-background/80 px-3 py-2 text-sm outline-none transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/20"
                />
+               {recentStudentEmails.length > 0 && !studentSearch && (
+                 <div className="flex flex-wrap gap-2">
+                   {recentStudentEmails.map((email) => {
+                     const recentStudent = AUTHORITATIVE_STUDENT_ROSTER.find((student) => student.email === email);
+                     if (!recentStudent) return null;
+                     return (
+                       <button
+                         key={email}
+                         type="button"
+                         onClick={() => applyStudentCredential(recentStudent.email, recentStudent.password, recentStudent.fullName)}
+                         className="rounded-full border border-primary/20 bg-background px-3 py-1 text-xs font-semibold text-primary transition hover:border-primary/50 hover:bg-primary/10"
+                       >
+                         Recent: {recentStudent.registerNumber}
+                       </button>
+                     );
+                   })}
+                 </div>
+               )}
                <div className="max-h-80 space-y-2 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                  {searchAuthoritativeStudents(studentSearch).length > 0 ? (
                    searchAuthoritativeStudents(studentSearch).map((student, idx) => (
@@ -382,8 +497,7 @@ export default function LoginPageClient() {
                        key={student.email}
                        type="button"
                        onClick={() => {
-                         applyDemoCredential('student', student.email, student.password);
-                         setStudentSearch(student.fullName);
+                         applyStudentCredential(student.email, student.password, student.fullName);
                        }}
                        className="animate-in fade-in slide-in-from-left-2 group flex w-full items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/60 px-3 py-2 text-left transition-all duration-200 hover:border-primary/50 hover:bg-card hover:shadow-md hover:shadow-primary/10"
                        style={{

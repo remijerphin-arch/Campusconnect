@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { BookOpen, CalendarDays, LayoutDashboard, UserRound } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import PageTransition from '@/components/PageTransition';
@@ -24,6 +26,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [accessChecked, setAccessChecked] = useState(false);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
 
   useEffect(() => {
     const role = window.localStorage.getItem('campusconnect-demo-role') as UserRole | null;
@@ -38,6 +41,7 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
       window.location.href = role && !isRoleAccessEnabled(role, settings) ? '/forbidden' : '/';
       return;
     }
+    setCurrentRole(role);
     setAccessChecked(true);
   }, [currentPath]);
 
@@ -58,8 +62,22 @@ export default function AppLayout({ children, currentPath }: AppLayoutProps) {
           onCollapseToggle={() => setSidebarCollapsed((value) => !value)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="px-4 pb-8 pt-24 sm:px-6 lg:px-8"><PageTransition key={currentPath}>{children}</PageTransition></main>
+        <main className="px-4 pb-28 pt-24 sm:px-6 lg:pb-8 lg:px-8"><PageTransition key={currentPath}>{children}</PageTransition></main>
       </div>
+      {currentRole === 'student' && (
+        <nav className="app-mobile-nav fixed bottom-4 left-4 right-4 z-30 flex items-center justify-around rounded-[1.45rem] border p-2 shadow-2xl lg:hidden" aria-label="Primary navigation">
+          {[
+            { href: '/student-dashboard', label: 'Home', Icon: LayoutDashboard },
+            { href: '/academics', label: 'Academics', Icon: BookOpen },
+            { href: '/student-services', label: 'Campus', Icon: CalendarDays },
+            { href: '/student-profile', label: 'Profile', Icon: UserRound },
+          ].map(({ href, label, Icon }) => (
+            <Link key={href} href={href} aria-current={currentPath === href ? 'page' : undefined} className={`flex min-w-14 flex-col items-center gap-1 rounded-xl px-3 py-2 text-[10px] font-semibold transition ${currentPath === href ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30' : 'text-muted-foreground'}`}>
+              <Icon size={17} />{label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </div>
   );
 }
