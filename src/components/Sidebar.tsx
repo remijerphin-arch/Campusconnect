@@ -24,16 +24,30 @@ interface SidebarProps {
   onMobileClose: () => void;
 }
 
+const studentNavigation = [
+  { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+  { href: '/student-profile', label: 'My Profile', icon: Users },
+  { href: '/academics', label: 'Academics', icon: BookOpen },
+  { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
+  { href: '/canteen', label: 'Canteen', icon: ChefHat },
+  { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
+  { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+] as const;
+
+const adminNavigation = [
+  { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
+  { href: '/campus-admin/canteen', label: 'Canteen Management', icon: ChefHat },
+  { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
+  { href: '/student-services', label: 'Student Services', icon: CalendarCheck },
+  { href: '/student-profile', label: 'Student Profile', icon: Users },
+  { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
+  { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
+  { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+  { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
+] as const;
+
 const navItemsByPath = {
-  '/student-dashboard': [
-    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-    { href: '/student-profile', label: 'My Profile', icon: Users },
-    { href: '/academics', label: 'Academics', icon: BookOpen },
-    { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
-    { href: '/canteen', label: 'Canteen', icon: ChefHat },
-    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
-  ],
+  '/student-dashboard': studentNavigation,
   '/faculty-dashboard': [
     { href: '/faculty-dashboard', label: 'Faculty Workspace', icon: BookOpen },
     { href: '/canteen', label: 'Canteen', icon: ChefHat },
@@ -43,27 +57,13 @@ const navItemsByPath = {
     { href: '/placement-admin', label: 'Placement Administration', icon: Building2 },
   ],
   '/placement-opportunities': [
-    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-    { href: '/student-profile', label: 'My Profile', icon: Users },
-    { href: '/academics', label: 'Academics', icon: BookOpen },
-    { href: '/student-services', label: 'Campus Services', icon: CalendarCheck },
-    { href: '/canteen', label: 'Canteen', icon: ChefHat },
-    { href: '/lost-found', label: 'Lost & Found', icon: SearchCheck },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+    ...studentNavigation,
   ],
   '/student-profile': [
-    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-    { href: '/student-profile', label: 'My Profile', icon: Users },
-    { href: '/academics', label: 'Academics', icon: BookOpen },
-    { href: '/canteen', label: 'Canteen', icon: ChefHat },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+    ...studentNavigation.filter((item) => !['/student-services', '/lost-found'].includes(item.href)),
   ],
   '/academics': [
-    { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-    { href: '/student-profile', label: 'My Profile', icon: Users },
-    { href: '/academics', label: 'Academics', icon: BookOpen },
-    { href: '/canteen', label: 'Canteen', icon: ChefHat },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
+    ...studentNavigation.filter((item) => !['/student-services', '/lost-found'].includes(item.href)),
   ],
   '/student-services': [
     { href: '/student-dashboard', label: 'My Dashboard', icon: LayoutDashboard },
@@ -75,26 +75,10 @@ const navItemsByPath = {
     { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
   ],
   '/campus-admin': [
-    { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
-    { href: '/campus-admin/canteen', label: 'Canteen Management', icon: ChefHat },
-    { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
-    { href: '/student-services', label: 'Student Services', icon: CalendarCheck },
-    { href: '/student-profile', label: 'Student Profile', icon: Users },
-    { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
-    { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
-    { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
+    ...adminNavigation,
   ],
   '/campus-admin/canteen': [
-    { href: '/campus-admin', label: 'Campus Control Center', icon: Shield },
-    { href: '/campus-admin/canteen', label: 'Canteen Management', icon: ChefHat },
-    { href: '/student-dashboard', label: 'Student Dashboard', icon: LayoutDashboard },
-    { href: '/student-services', label: 'Student Services', icon: CalendarCheck },
-    { href: '/student-profile', label: 'Student Profile', icon: Users },
-    { href: '/faculty-dashboard', label: 'Faculty Services', icon: BookOpen },
-    { href: '/placement-admin', label: 'Placement Services', icon: Building2 },
-    { href: '/placement-opportunities', label: 'Placement Opportunities', icon: Briefcase },
-    { href: '/lost-found', label: 'Lost & Found Moderation', icon: SearchCheck },
+    ...adminNavigation,
   ],
 } as const;
 
