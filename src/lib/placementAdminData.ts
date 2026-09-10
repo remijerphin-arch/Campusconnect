@@ -1,3 +1,6 @@
+/**
+ * Data structures and types for placement drives, candidate applications, and company records.
+ */
 export type DriveStatus =
   | 'upcoming'
   | 'active'
