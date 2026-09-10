@@ -101,8 +101,9 @@ export default function CanteenPageClient() {
               <UtensilsCrossed size={26} />
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Canteen</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Canteen companion</p>
               <h1 className="mt-1 text-3xl font-bold">{selectedCanteen?.name ?? 'South Canteen'}</h1>
+              <p className="mt-1 text-xs text-muted-foreground">Pre-order pickup available at South Block Cafeteria counters</p>
             </div>
           </div>
 
@@ -113,12 +114,12 @@ export default function CanteenPageClient() {
             </div>
             <div className="flex items-center gap-2 rounded-full bg-success/10 px-3 py-2 text-sm font-semibold text-success">
               <span className="inline-block h-2 w-2 rounded-full bg-success" />
-              Open
+              Serving Now
             </div>
             <button
               type="button"
               onClick={() => setIsOriginalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium text-primary"
+              className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium text-primary hover:bg-muted"
             >
               <Eye size={16} />
               View Original Menu
