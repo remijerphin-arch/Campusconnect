@@ -93,6 +93,20 @@ const assignments = [
     status: 'Graded',
     marks: '18/20',
   },
+  {
+    title: 'Process Synchronization Case Study',
+    subject: 'Operating Systems',
+    due: '2026-09-02',
+    status: 'Pending',
+    marks: '-',
+  },
+  {
+    title: 'Cloud Architecture System Diagram',
+    subject: 'Cloud Computing',
+    due: '2026-09-10',
+    status: 'Pending',
+    marks: '-',
+  },
 ];
 const resources = [
   {
@@ -112,6 +126,20 @@ const resources = [
   {
     title: 'Operating Systems lab manual',
     subject: 'Operating Systems',
+    type: 'Lab manual',
+    department: 'CSE',
+    semester: '7',
+  },
+  {
+    title: 'SQL & Database Indexing Guide',
+    subject: 'Database Systems',
+    type: 'PDF',
+    department: 'CSE',
+    semester: '7',
+  },
+  {
+    title: 'Computer Networks Packet Tracer Lab',
+    subject: 'Computer Networks',
     type: 'Lab manual',
     department: 'CSE',
     semester: '7',
