@@ -1,3 +1,6 @@
+/**
+ * Helper utilities for assembling student academic progress, GPA trends, and portal overview data.
+ */
 import { DEMO_STUDENT_RECORDS, getDemoStudentByEmail } from '@/lib/studentDemoData';
 
 export type StudentPortalOverviewCard = {
