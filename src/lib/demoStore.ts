@@ -144,7 +144,32 @@ export interface CampusUpdate {
 export function readCampusUpdates(): CampusUpdate[] {
   if (typeof window === 'undefined') return [];
   const value = window.localStorage.getItem(CAMPUS_UPDATES_KEY);
-  return value ? JSON.parse(value) : [];
+  if (value) return JSON.parse(value);
+
+  const initialUpdates: CampusUpdate[] = [
+    {
+      id: 'update-seed-1',
+      title: 'End-Semester Exam Schedule Published',
+      content: 'The official end-semester examination timetable for all B.Tech departments has been uploaded under Academic Services.',
+      targetRole: 'student',
+      createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    },
+    {
+      id: 'update-seed-2',
+      title: 'Library Extended Hours During Finals',
+      content: 'The Central Library & Quiet Study Reading Rooms will remain open until 11:00 PM starting next Monday.',
+      targetRole: 'student',
+      createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
+    },
+    {
+      id: 'update-seed-3',
+      title: 'Campus Recruitment Drive Registration Open',
+      content: 'Eligible 7th semester students are requested to complete company preference choices in the Placement Portal.',
+      targetRole: 'student',
+      createdAt: new Date(Date.now() - 3600000 * 28).toISOString(),
+    },
+  ];
+  return initialUpdates;
 }
 
 export function publishCampusUpdate(update: Omit<CampusUpdate, 'id' | 'createdAt'>) {
