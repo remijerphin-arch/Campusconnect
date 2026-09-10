@@ -10,6 +10,9 @@ import { isRoleAccessEnabled } from '@/lib/adminAccess';
 import { readAdminSettings } from '@/lib/demoStore';
 import type { UserRole } from '@/types';
 
+/**
+ * Props interface for the top-level application wrapper layout.
+ */
 interface AppLayoutProps {
   children: React.ReactNode;
   currentPath: string;
