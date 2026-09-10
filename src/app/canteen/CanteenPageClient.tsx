@@ -16,6 +16,9 @@ const categoryOrder = [
   'Pan Asian Dinner',
 ];
 
+/**
+ * Client component for browsing daily campus canteen menus, active categories, and pre-orders.
+ */
 export default function CanteenPageClient() {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const [canteens, setCanteens] = useState(DEFAULT_CANTEENS);
