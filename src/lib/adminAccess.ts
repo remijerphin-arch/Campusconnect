@@ -1,6 +1,9 @@
 import type { AdminSettings } from '@/lib/demoStore';
 import type { UserRole } from '@/types';
 
+/**
+ * Human-readable service area labels mapped to user roles.
+ */
 export const roleAccessLabels: Record<UserRole, string> = {
   student: 'Student portal',
   faculty: 'Faculty workspace',
@@ -8,6 +11,9 @@ export const roleAccessLabels: Record<UserRole, string> = {
   campus_admin: 'Campus admin',
 };
 
+/**
+ * Maps user roles to internal service keys in AdminSettings.
+ */
 const roleServiceMap: Record<UserRole, keyof AdminSettings['services']> = {
   student: 'studentPortal',
   faculty: 'facultyWorkspace',
@@ -15,6 +21,9 @@ const roleServiceMap: Record<UserRole, keyof AdminSettings['services']> = {
   campus_admin: 'studentPortal',
 };
 
+/**
+ * Evaluates whether a given user role has access based on current system admin settings.
+ */
 export function isRoleAccessEnabled(role: UserRole, settings: AdminSettings | null | undefined) {
   if (!settings) return true;
   if (role === 'campus_admin') return true;
