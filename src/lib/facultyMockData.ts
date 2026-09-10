@@ -1,3 +1,6 @@
+/**
+ * Mock data schemas for faculty teaching workflows, subjects, rosters, and evaluation records.
+ */
 export interface FacultySubject {
   id: string;
   code: string;
