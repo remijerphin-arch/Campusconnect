@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import { createLeaveRequest, readCampusUpdates, readLeaveRequests } from '@/lib/demoStore';
 import { getDemoStudentByEmail } from '@/lib/studentDemoData';
 import CampusHub from '@/app/student-services/components/CampusHub';
+import StudentSafetyCard from '@/components/StudentSafetyCard';
 
 type Tab =
   | 'attendance'
@@ -41,7 +42,8 @@ type Tab =
   | 'events'
   | 'exchange'
   | 'helpdesk'
-  | 'hub';
+  | 'hub'
+  | 'safety';
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'attendance', label: 'Attendance' },
@@ -57,6 +59,7 @@ const tabs: { id: Tab; label: string }[] = [
   { id: 'exchange', label: 'Exchange' },
   { id: 'helpdesk', label: 'Help & complaint' },
   { id: 'hub', label: 'Campus Hub' },
+  { id: 'safety', label: 'Safety & Emergency' },
 ];
 
 const attendance = [
@@ -964,6 +967,7 @@ export default function StudentServicesPage() {
       </Panel>
     ),
     hub: <CampusHub />,
+    safety: <StudentSafetyCard />,
   }[active];
 
   return (
