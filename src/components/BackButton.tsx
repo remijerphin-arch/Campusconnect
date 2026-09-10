@@ -2,6 +2,9 @@
 
 import { ArrowLeft } from 'lucide-react';
 
+/**
+ * Reusable back button component that steps back in browser history.
+ */
 export default function BackButton() {
   return (
     <button
@@ -15,3 +18,4 @@ export default function BackButton() {
     </button>
   );
 }
+
