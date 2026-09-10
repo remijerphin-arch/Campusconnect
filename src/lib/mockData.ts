@@ -9,6 +9,9 @@ import type {
   UserProfile,
 } from '@/types';
 
+/**
+ * Default mock student profile for previewing student dashboard features.
+ */
 export const MOCK_STUDENT: UserProfile = {
   id: 'student-2021-cs-047',
   email: 'arjun.sharma@campusconnect.edu',
