@@ -1,5 +1,11 @@
+/**
+ * Canteen menu items, pickup slots, pre-order schemas, and meal categories for CampusConnect.
+ */
 export type FoodType = 'Vegetarian' | 'Non-Vegetarian' | 'Mixed';
 
+/**
+ * Represents a campus canteen facility with location and operating hours.
+ */
 export interface Canteen {
   id: string;
   name: string;
