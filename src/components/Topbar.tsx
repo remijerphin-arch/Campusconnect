@@ -10,6 +10,9 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import type { UserRole } from '@/types';
 import { getActiveStudentPortalData } from '@/lib/studentPortalData';
 
+/**
+ * Topbar header props interface managing search, notifications, and navigation toggles.
+ */
 interface TopbarProps {
   currentPath: string;
   onMenuClick: () => void;
