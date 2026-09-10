@@ -17,6 +17,9 @@ import {
 import AppLogo from '@/components/ui/AppLogo';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
+/**
+ * Interface for sidebar navigation props and mobile drawer handlers.
+ */
 interface SidebarProps {
   collapsed: boolean;
   currentPath: string;
