@@ -8,6 +8,9 @@ import { MOCK_ATTENDANCE, MOCK_CGPA_TREND, MOCK_MARKS } from '@/lib/mockData';
 import { readAttendanceOverrides, readMarksOverrides } from '@/lib/demoStore';
 import type { MarksEntry, StudentAttendanceRow } from '@/lib/facultyMockData';
 
+/**
+ * Main Student Academics view displaying marks breakdown, attendance charts, CGPA trends, and PDF exports.
+ */
 export default function AcademicsPage() {
   const [marks, setMarks] = useState(MOCK_MARKS);
   const [attendance, setAttendance] = useState(MOCK_ATTENDANCE);
