@@ -2,7 +2,7 @@
 
 **A role-aware campus operating system for academics, student life, and career growth.**
 
-CampusConnect brings the daily college experience into one focused workspace. Students can track their academic progress, manage campus services, discover opportunities, recover lost items, and take part in campus life. Faculty can run teaching workflows. Placement teams can manage company drives. Campus administrators control access, modules, and platform policy.
+CampusConnect unifies the everyday college experience within a single, streamlined platform. Students can monitor their academic progress, access campus services, explore opportunities, report and recover lost items, and actively participate in campus activities. Faculty can efficiently manage teaching-related workflows, while placement teams can organize and oversee company recruitment drives. Campus administrators have centralized control over user access, platform modules, and institutional policies.
 
 ## Table of Contents
 
