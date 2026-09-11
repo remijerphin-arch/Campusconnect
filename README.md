@@ -37,7 +37,7 @@ CampusConnect unifies the everyday college experience within a single, streamlin
 - Faculty attendance management featuring bulk actions, date selection, system warnings, and CSV export
 - Configurable assessment types including CIA, assignment, quiz, mid-sem, practical, and custom types
 - Placement company CRUD, drive creation, lifecycle stages, and selection rounds
-- Explainable placement screening based on CGPA, backlogs, attendance, and drive criteria
+- Explainable placement eligibility screening based on CGPA, active backlogs, attendance, and drive criteria.
 - Student profile with permitted-field editing and professional details
 - Campus Services workspace for timetable, assignments, exams, resources, leave, community, events, exchange, and help desk
 - First-class Lost & Found reporting, search, filters, private claim verification, and status flow
