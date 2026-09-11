@@ -1,17 +1,31 @@
 # CampusConnect
 
-> A role-aware campus operating system for academics, student life, and career growth.
+**A role-aware campus operating system for academics, student life, and career growth.**
 
-CampusConnect brings the daily college experience into one focused workspace. Students can follow their academic progress, manage campus services, discover opportunities, recover lost items, and participate in campus life. Faculty can run teaching workflows. Placement teams can manage company drives. Campus administrators control access, modules, and platform policy.
+CampusConnect brings the daily college experience into one focused workspace. Students can track their academic progress, manage campus services, discover opportunities, recover lost items, and take part in campus life. Faculty can run teaching workflows. Placement teams can manage company drives. Campus administrators control access, modules, and platform policy.
+
+## Table of Contents
+
+- [Product Surface](#product-surface)
+- [Highlights](#highlights)
+- [Routes](#routes)
+- [Tech Stack](#tech-stack)
+- [Local Development](#local-development)
+- [Demo Accounts](#demo-accounts)
+- [Architecture](#architecture)
+- [Supabase Setup](#supabase-setup)
+- [Deploy to Vercel](#deploy-to-vercel)
+- [Production Status](#production-status)
+- [License](#license)
 
 ## Product Surface
 
 | Workspace | What it includes |
-| --- | --- |
-| Student | Dashboard, profile, academics, attendance, timetable, assignments, exams, resources, announcements, leave, community, Lost & Found, events, clubs, exchange, help desk, placements |
-| Faculty | Subjects, rosters, date-based attendance, bulk attendance, low-attendance review, marks, assessment types, assignments, leave review, exports |
-| Placement Admin | Companies, drives, eligibility, lifecycle stages, applications, explainable shortlist scoring, candidate selection |
-| Campus Admin | Users, roles, permissions, module switches, dashboard widgets, RFID state, maintenance mode, audit activity |
+|---|---|
+| **Student** | Dashboard, profile, academics, attendance, timetable, assignments, exams, resources, announcements, leave, community, Lost & Found, events, clubs, exchange, help desk, placements |
+| **Faculty** | Subjects, rosters, date-based attendance, bulk attendance, low-attendance review, marks, assessment types, assignments, leave review, exports |
+| **Placement Admin** | Companies, drives, eligibility, lifecycle stages, applications, explainable shortlist scoring, candidate selection |
+| **Campus Admin** | Users, roles, permissions, module switches, dashboard widgets, RFID state, maintenance mode, audit activity |
 
 ## Highlights
 
@@ -34,15 +48,24 @@ CampusConnect brings the daily college experience into one focused workspace. St
 
 ## Routes
 
-- `/` - Role-aware sign in and demo access
-- `/student-dashboard` - Student home
-- `/student-profile` - Profile and professional information
-- `/academics` - Marks, attendance, results, and performance
-- `/student-services` - Student service hub
-- `/lost-found` - Lost & Found reports and claims
-- `/faculty-dashboard` - Faculty teaching workspace
-- `/placement-admin` - Placement management and smart screening
-- `/campus-admin` - Campus control center
+| Route | Description |
+|---|---|
+| `/` | Role-aware sign in and demo access |
+| `/student-dashboard` | Student home |
+| `/student-profile` | Profile and professional information |
+| `/academics` | Marks, attendance, results, and performance |
+| `/student-services` | Student service hub |
+| `/lost-found` | Lost & Found reports and claims |
+| `/faculty-dashboard` | Faculty teaching workspace |
+| `/placement-admin` | Placement management and smart screening |
+| `/campus-admin` | Campus control center |
+
+## Tech Stack
+
+- **Framework:** Next.js
+- **Backend:** Supabase (Auth, PostgreSQL, Storage, Row Level Security)
+- **Hosting:** Vercel
+- **Tooling:** ESLint, Prettier, TypeScript
 
 ## Local Development
 
@@ -66,17 +89,17 @@ npm run build
 ## Demo Accounts
 
 | Role | Email | Password |
-| --- | --- | --- |
-| Student | `student@campusconnect.edu` | `student123` |
-| Faculty | `faculty@campusconnect.edu` | `faculty123` |
-| Placement Admin | `placement@campusconnect.edu` | `placement123` |
-| Campus Admin | `admin@campusconnect.edu` | `admin123` |
+|---|---|---|
+| Student | student@campusconnect.edu | student123 |
+| Faculty | faculty@campusconnect.edu | faculty123 |
+| Placement Admin | placement@campusconnect.edu | placement123 |
+| Campus Admin | admin@campusconnect.edu | admin123 |
 
-Demo changes use browser storage so the workflows remain usable without a backend session. Demo mode is for development only.
+> Demo changes use browser storage so the workflows remain usable without a backend session. Demo mode is for development only.
 
 ## Architecture
 
-```text
+```
 Supabase Auth / Database / Storage
               |
      Server repository layer
@@ -88,19 +111,19 @@ Supabase Auth / Database / Storage
         Shared UI components
 ```
 
-- `src/lib/data/repository.ts` is the server data-access boundary with an explicit demo fallback.
-- `src/lib/data/dataProvider.ts` exposes the common provider contract.
-- `src/lib/auth/permissions.ts` defines the centralized `module.action` permission vocabulary.
-- `middleware.ts` refreshes Supabase sessions and blocks unauthorized paths.
-- `src/lib/validation.ts` centralizes required fields, email, phone, date, CGPA, and marks validation.
-- `src/lib/supabase/storage.ts` validates file type, size, bucket, and user-scoped paths.
-- `src/lib/demoStore.ts` is intentionally limited to local demo persistence.
+- `src/lib/data/repository.ts` — server data-access boundary with an explicit demo fallback
+- `src/lib/data/dataProvider.ts` — exposes the common provider contract
+- `src/lib/auth/permissions.ts` — defines the centralized `module.action` permission vocabulary
+- `middleware.ts` — refreshes Supabase sessions and blocks unauthorized paths
+- `src/lib/validation.ts` — centralizes required fields, email, phone, date, CGPA, and marks validation
+- `src/lib/supabase/storage.ts` — validates file type, size, bucket, and user-scoped paths
+- `src/lib/demoStore.ts` — intentionally limited to local demo persistence
 
 ## Supabase Setup
 
 Copy `.env.example` to `.env.local` and set:
 
-```env
+```
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
@@ -117,7 +140,7 @@ npx supabase db push
 
 Review the RLS policies for your institution before production use. Supabase Storage policies expect files under a user-scoped path such as `USER_ID/file-name.pdf`.
 
-## Deploy To Vercel
+## Deploy to Vercel
 
 Vercel is sufficient for this Next.js application. Supabase provides Auth, PostgreSQL, Storage, and RLS.
 
@@ -131,7 +154,7 @@ Render is not required unless a separate long-running RFID worker, scheduled job
 
 ## Production Status
 
-The UI and demo workflows are implemented and the Supabase schema/RLS foundation is included. Some existing screens still use demo fixtures or browser storage while their individual repository queries are being migrated. Before production launch, connect each mutation to Supabase, review all RLS policies, configure private Storage buckets, add monitoring, and rotate any credentials that were shared during development.
+The UI and demo workflows are implemented and the Supabase schema/RLS foundation is included. Some existing screens still use demo fixtures or browser storage while their individual repository queries are being migrated. Before production launch: connect each mutation to Supabase, review all RLS policies, configure private Storage buckets, add monitoring, and rotate any credentials that were shared during development.
 
 ## License
 
