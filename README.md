@@ -34,7 +34,7 @@ CampusConnect unifies the everyday college experience within a single, streamlin
 - Complete student navigation stays visible across Dashboard, Academics, Profile, Campus Services, Lost & Found, and Placement Opportunities
 - Supabase Auth with server-side role resolution and middleware session refresh
 - Student academic record with marks, attendance, SGPA/CGPA, charts, and print-to-PDF reporting
-- Faculty attendance editing with bulk actions, date selection, warnings, and CSV export
+- Faculty attendance management featuring bulk actions, date selection, system warnings, and CSV export
 - Configurable assessment types including CIA, assignment, quiz, mid-sem, practical, and custom types
 - Placement company CRUD, drive creation, lifecycle stages, and selection rounds
 - Explainable placement screening based on CGPA, backlogs, attendance, and drive criteria
