@@ -2,11 +2,13 @@
   "name": "campusconnect",
   "version": "0.1.0",
   "private": true,
+  "description": "A role-aware campus operating system for academics, student life, and career growth.",
+  "keywords": ["campus", "student-portal", "nextjs", "supabase", "education"],
   "scripts": {
     "dev": "next dev -p 4028",
     "build": "next build",
     "start": "next start -p 4028",
-    "test": "tsx --test src/lib/adminAccess.test.ts src/lib/studentDemoData.test.ts src/lib/auth/permissions.test.ts",
+    "test": "tsx --test src/lib/adminAccess.test.ts src/lib/studentDemoData.test.ts src/lib/auth/permissions.test.ts src/lib/validation.test.ts",
     "lint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit"
   },
